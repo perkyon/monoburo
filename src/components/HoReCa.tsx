@@ -11,7 +11,7 @@ const projects: Project[] = [
     id: 1,
     name: "Союзники кофе",
     image: "/figma/preview-so.jpg",
-    location: "Дальняя 8к1",
+    location: "Тургенева 151, Краснодар",
     details: {
       lead: "Про уют без потери скорости обслуживания — пространство, которое работает в часы пик.",
       story:
@@ -38,7 +38,7 @@ const projects: Project[] = [
     id: 2,
     name: "Том Сойер",
     image: "/figma/preview-tom.jpg",
-    location: "Дальняя 8к1",
+    location: "Тургенева 151, Краснодар",
     details: {
       lead: "Маленькая площадь, где каждый сантиметр обязан работать на бизнес.",
       story:
@@ -65,7 +65,7 @@ const projects: Project[] = [
     id: 3,
     name: "Серф кофе",
     image: "/figma/preview-surf.webp",
-    location: "Дальняя 8к1",
+    location: "Тургенева 151, Краснодар",
     details: {
       lead: "Про энергию и «картинку» — интерьер, который работает и днём, и вечером.",
       story:
@@ -92,7 +92,7 @@ const projects: Project[] = [
     id: 4,
     name: "Лейбл кофе",
     image: "/figma/preview-label.jpg",
-    location: "Дальняя 8к1",
+    location: "Тургенева 151, Краснодар",
     details: {
       lead: "Премиальная чистота без демонстративной роскоши.",
       story:

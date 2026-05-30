@@ -4,11 +4,12 @@
  import { useEffect, useRef, useState } from "react";
  import { createPortal } from "react-dom";
  import { ProjectModal, type Project } from "@/components/ProjectModal";
+ import { InteriorItems } from "@/components/InteriorItems";
 
  const cards = [
-   { title: "Дом", image: "/assets/home1.png" },
-   { title: "HoReCa", image: "/figma/tom7.jpg" },
-   { title: "Предметы интерьера", image: "/assets/home3.png" }
+   { id: "home", title: "Дом", image: "/assets/home1.png" },
+   { id: "horeca", title: "HoReCa", image: "/figma/tom7.jpg" },
+   { id: "interior", title: "Предметы интерьера", image: "/assets/home3.png" }
  ];
 
  const horecaProjects: Project[] = [
@@ -16,7 +17,7 @@
      id: 1,
      name: "Союзники кофе",
      image: "/figma/preview-so.jpg",
-     location: "Дальняя 8к1",
+     location: "Тургенева 151, Краснодар",
      details: {
        lead: "Про уют без потери скорости обслуживания — пространство, которое работает в часы пик.",
        story:
@@ -43,7 +44,7 @@
      id: 2,
      name: "Том Сойер",
      image: "/figma/preview-tom.jpg",
-     location: "Дальняя 8к1",
+     location: "Тургенева 151, Краснодар",
      details: {
        lead: "Маленькая площадь, где каждый сантиметр обязан работать на бизнес.",
        story:
@@ -70,7 +71,7 @@
      id: 3,
      name: "Серф кофе",
      image: "/figma/preview-surf.webp",
-     location: "Дальняя 8к1",
+     location: "Тургенева 151, Краснодар",
      details: {
       lead: "Про энергию и «картинку» — интерьер, который работает и днём, и вечером.",
       story:
@@ -97,7 +98,7 @@
      id: 4,
      name: "Лейбл кофе",
      image: "/figma/preview-label.jpg",
-     location: "Дальняя 8к1",
+     location: "Тургенева 151, Краснодар",
      details: {
        lead: "Премиальная чистота без демонстративной роскоши.",
        story:
@@ -150,15 +151,16 @@
 
  export const Projects = () => {
    const [isHoReCaOpen, setIsHoReCaOpen] = useState(false);
+   const [isInteriorOpen, setIsInteriorOpen] = useState(false);
    const [activeProject, setActiveProject] = useState<Project | null>(null);
+   const [openedFrom, setOpenedFrom] = useState<"horeca" | "interior" | null>(null);
    const horecaScrollRef = useRef<HTMLDivElement>(null);
+   const interiorScrollRef = useRef<HTMLDivElement>(null);
 
    useEffect(() => {
-     if (!isHoReCaOpen) {
-       return;
-     }
+     if (!isHoReCaOpen && !isInteriorOpen) return;
      return lockBodyScroll();
-   }, [isHoReCaOpen]);
+   }, [isHoReCaOpen, isInteriorOpen]);
 
    return (
     <section id="projects" className="relative z-10 w-full bg-white pt-4 max-md:mt-12 md:pt-6">
@@ -170,11 +172,15 @@
         <div className="relative mt-10 md:absolute md:left-[100px] md:top-[100px] flex gap-[14px] md:gap-[22px] max-md:flex-col">
           {cards.map((card) => (
             <button
-              key={card.title}
+              key={card.id}
               type="button"
               onClick={() => {
-                if (card.title === "HoReCa") {
+                if (card.id === "horeca") {
                   setIsHoReCaOpen(true);
+                  return;
+                }
+                if (card.id === "interior") {
+                  setIsInteriorOpen(true);
                   return;
                 }
                 window.location.href = "/missing";
@@ -242,6 +248,7 @@
                     type="button"
                     onClick={() => {
                       setIsHoReCaOpen(false);
+                      setOpenedFrom("horeca");
                       setActiveProject(project);
                     }}
                     className="group relative h-[360px] md:h-[60vh] md:max-h-[720px] w-[78vw] md:w-[520px] shrink-0 snap-start overflow-hidden rounded-[20px] md:rounded-[28px] text-left"
@@ -262,14 +269,49 @@
          )
        }
 
+       {isInteriorOpen && typeof document !== "undefined" &&
+         createPortal(
+           <div
+             className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/90 backdrop-blur-sm px-4 md:px-6 py-6 md:py-10 overflow-hidden"
+             onClick={() => setIsInteriorOpen(false)}
+           >
+             <div
+               className="relative w-full max-w-[1200px] max-h-[90vh] rounded-[24px] md:rounded-[32px] bg-white p-[20px] md:p-[40px] shadow-2xl overflow-x-hidden overflow-y-auto"
+               onClick={(e) => e.stopPropagation()}
+             >
+               <button
+                 type="button"
+                 aria-label="Закрыть"
+                 onClick={() => setIsInteriorOpen(false)}
+                 className="absolute right-[20px] top-[16px] text-[28px] text-black/60 hover:text-black"
+               >
+                 ×
+               </button>
+               <h3 className="t-h2 text-black mb-4 md:mb-6">Предметы интерьера</h3>
+               <InteriorItems
+                 scrollRef={interiorScrollRef}
+                 onSelect={(project) => {
+                   setIsInteriorOpen(false);
+                   setOpenedFrom("interior");
+                   setActiveProject(project);
+                 }}
+               />
+             </div>
+           </div>,
+           document.body
+         )
+       }
+
        {activeProject && (
-         <ProjectModal
-           project={activeProject}
-           onClose={() => {
-             setActiveProject(null);
-             setIsHoReCaOpen(true);
-           }}
-         />
+        <ProjectModal
+          project={activeProject}
+          onClose={() => {
+            setActiveProject(null);
+            if (openedFrom === "horeca") setIsHoReCaOpen(true);
+            if (openedFrom === "interior") setIsInteriorOpen(true);
+            setOpenedFrom(null);
+          }}
+        />
        )}
      </section>
    );

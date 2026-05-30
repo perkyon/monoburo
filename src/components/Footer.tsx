@@ -20,11 +20,13 @@ const columns = [
   }
 ];
 
+import { contactTelegram, contactWhatsApp } from "@/utils/site";
+
 const socialLinks = {
-  telegram: "https://t.me/+ms6fdSYzjhxkYTky",
+  telegram: contactTelegram,
   instagram: "https://www.instagram.com/buro.house?igsh=MXNudnNnamlob2c1NQ==",
   pinterest: "https://pinterest.com",
-  whatsapp: "https://wa.me/79181234567",
+  whatsapp: `https://wa.me/${contactWhatsApp}`,
   vk: "https://vk.com"
 } as const;
 

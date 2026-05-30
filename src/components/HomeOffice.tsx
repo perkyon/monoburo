@@ -11,35 +11,35 @@ const projects: Project[] = [
     id: 1,
     name: "ЖК Сердце",
     image: "/assets/home1.png",
-    location: "Дальняя 8к1",
+    location: "Тургенева 151, Краснодар",
     gallery: ["/assets/home1.png", "/assets/home2.png", "/assets/home3.png", "/assets/home4.png"]
   },
   {
     id: 2,
     name: "ЖК Сердце",
     image: "/assets/home2.png",
-    location: "Дальняя 8к1",
+    location: "Тургенева 151, Краснодар",
     gallery: ["/assets/home2.png", "/assets/home3.png", "/assets/home4.png", "/assets/home5.png"]
   },
   {
     id: 3,
     name: "ЖК Сердце",
     image: "/assets/home3.png",
-    location: "Дальняя 8к1",
+    location: "Тургенева 151, Краснодар",
     gallery: ["/assets/home3.png", "/assets/home4.png", "/assets/home5.png", "/assets/home1.png"]
   },
   {
     id: 4,
     name: "ЖК Сердце",
     image: "/assets/home4.png",
-    location: "Дальняя 8к1",
+    location: "Тургенева 151, Краснодар",
     gallery: ["/assets/home4.png", "/assets/home5.png", "/assets/home1.png", "/assets/home2.png"]
   },
   {
     id: 5,
     name: "ЖК Сердце",
     image: "/assets/home5.png",
-    location: "Дальняя 8к1",
+    location: "Тургенева 151, Краснодар",
     gallery: ["/assets/home5.png", "/assets/home1.png", "/assets/home2.png", "/assets/home3.png"]
   }
 ];

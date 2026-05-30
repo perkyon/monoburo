@@ -2,6 +2,13 @@
 
 import { useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import {
+  contactEmail,
+  contactTelegram,
+  contactTelegramHandle,
+  contactWhatsApp,
+  contactWhatsAppDisplay,
+} from "@/utils/site";
 
 type RequestModalProps = {
   onClose: () => void;
@@ -66,7 +73,7 @@ export const RequestModal = ({ onClose }: RequestModalProps) => {
 
         <div className={`flex flex-col gap-4 ${isConsented ? "" : "opacity-60"}`}>
           <a
-            href="https://t.me/Aleg_AXAX_Olegi"
+            href={contactTelegram}
             target="_blank"
             rel="noreferrer"
             onClick={handleContactClick}
@@ -81,12 +88,12 @@ export const RequestModal = ({ onClose }: RequestModalProps) => {
             </span>
             <div>
               <p className="font-unbounded font-medium t-body">Telegram</p>
-              <p className="font-unbounded t-caption text-white/80">@Aleg_AXAX_Olegi</p>
+              <p className="font-unbounded t-caption text-white/80">{contactTelegramHandle}</p>
             </div>
           </a>
 
           <a
-            href="https://wa.me/79094676110"
+            href={`https://wa.me/${contactWhatsApp}`}
             target="_blank"
             rel="noreferrer"
             onClick={handleContactClick}
@@ -101,12 +108,12 @@ export const RequestModal = ({ onClose }: RequestModalProps) => {
             </span>
             <div>
               <p className="font-unbounded font-medium t-body">WhatsApp</p>
-              <p className="font-unbounded t-caption text-white/90">+7 (909) 467-61-10</p>
+              <p className="font-unbounded t-caption text-white/90">{contactWhatsAppDisplay}</p>
             </div>
           </a>
 
           <a
-            href="mailto:sales@burodsgn.ru"
+            href={`mailto:${contactEmail}`}
             onClick={handleContactClick}
             aria-disabled={!isConsented}
             className={`flex items-center gap-4 rounded-[14px] bg-[#141414] p-4 text-white shadow-[0_10px_20px_rgba(0,0,0,0.3)] transition-transform duration-200 ${isConsented ? "hover:-translate-y-[2px] hover:shadow-[0_14px_28px_rgba(0,0,0,0.4)]" : "cursor-not-allowed"}`}
@@ -118,7 +125,7 @@ export const RequestModal = ({ onClose }: RequestModalProps) => {
             </span>
             <div>
               <p className="font-unbounded font-medium t-body">Email</p>
-              <p className="font-unbounded t-caption text-white/80">sales@burodsgn.ru</p>
+              <p className="font-unbounded t-caption text-white/80">{contactEmail}</p>
             </div>
           </a>
         </div>

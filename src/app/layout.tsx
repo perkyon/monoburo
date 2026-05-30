@@ -5,6 +5,7 @@ import "./globals.css";
 
 import { CustomCursor } from "@/components/CustomCursor";
 import {
+  contactPhoneRaw,
   siteDescription,
   siteLocale,
   siteLogo,
@@ -148,6 +149,7 @@ export default function RootLayout({
     description: siteDescription,
     address: {
       "@type": "PostalAddress",
+      streetAddress: "ул. Тургенева, 151",
       addressLocality: "Краснодар",
       addressRegion: "Краснодарский край",
       addressCountry: "RU",
@@ -156,7 +158,7 @@ export default function RootLayout({
       "@type": "Country",
       name: "Россия",
     },
-    telephone: "+7-918-123-45-67",
+    telephone: contactPhoneRaw,
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Услуги Monoburo",
