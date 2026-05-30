@@ -8,7 +8,7 @@ export const siteOgImage = "/assets/hero-bg.png";
 export const siteLogo = "/assets/monoburo-mark.svg";
 
 /** Контакты ИП Першин В.В. */
-export const contactEmail = "vv.pershin023@yandex.ru";
+export const contactEmail = "a.matcyp@mail.ru";
 export const contactPhone = "+7 (918) 412-87-19";
 export const contactPhoneRaw = "+7-918-412-87-19";
 export const contactWhatsApp = "79181365558";

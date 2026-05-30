@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 const lastUpdated = "14.03.2025";
-const operatorEmail = "vv.pershin023@yandex.ru";
+const operatorEmail = "a.matcyp@mail.ru";
 const siteUrl = "https://www.monoburo.ru";
 
 export default function PrivacyPolicyPage() {
