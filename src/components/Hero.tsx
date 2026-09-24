@@ -5,72 +5,82 @@ import { useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { RequestModal } from "@/components/RequestModal";
 
+const navLinks = [
+  { href: "#about", label: "О нас" },
+  { href: "#projects", label: "Проекты" },
+  { href: "#events", label: "Мероприятия" },
+  { href: "#contacts", label: "Контакты" },
+] as const;
+
 export const Hero = () => {
   const { scrollY } = useScroll();
-  const bgY = useTransform(scrollY, [0, 1000], [0, 200]);
-  const contentY = useTransform(scrollY, [0, 500], [0, -50]);
+  const bgY = useTransform(scrollY, [0, 1000], [0, 180]);
+  const contentY = useTransform(scrollY, [0, 500], [0, -40]);
+  const contentOpacity = useTransform(scrollY, [0, 320], [1, 0.35]);
   const [isRequestOpen, setIsRequestOpen] = useState(false);
 
   return (
-    <section id="hero" className="relative w-full min-h-[720px] md:h-[1024px] overflow-hidden bg-white">
+    <section id="hero" className="relative w-full min-h-[100svh] overflow-hidden bg-black">
       <h1 className="sr-only">
         Monoburo — дизайн и производство мебели для бизнеса, дома и офисов
       </h1>
-      <div className="relative w-full h-[720px] md:h-full overflow-hidden rounded-[24px] md:rounded-none" data-name="Hero">
-        {/* Background with parallax */}
+
+      <div className="relative w-full min-h-[100svh] overflow-hidden" data-name="Hero">
         <motion.div className="absolute inset-0 w-full h-[120%]" style={{ y: bgY }}>
           <Image
             src="/assets/hero-bg.png"
-            alt="Monoburo Hero"
+            alt=""
             fill
             priority
-            quality={95}
+            quality={90}
             sizes="100vw"
             className="object-cover pointer-events-none object-[center_28%]"
           />
         </motion.div>
 
-        {/* Overlay — темнее по центру, чтобы текст не конфликтовал с фоном */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/40 via-black/55 to-black/50" />
+        <div className="absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.35)_42%,rgba(0,0,0,0.72)_100%)]" />
 
-        {/* Logo */}
-        <motion.div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ y: contentY }}>
-          <img src="/assets/monoburo-logo.svg" alt="Монобюро" className="w-[1240px] h-[109px] max-md:w-[90%] max-md:h-auto" />
-        </motion.div>
-
-        <div className="absolute left-1/2 top-[630px] md:top-[730px] max-md:top-auto max-md:bottom-[28px] -translate-x-1/2 z-10 flex flex-col items-center gap-4 md:gap-5 pointer-events-none max-md:px-6">
-          <p className="font-unbounded t-body-sm text-white/90 text-center drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] max-w-[600px]">
+        <motion.div
+          className="absolute inset-0 z-[2] flex flex-col items-center justify-center px-6 pointer-events-none"
+          style={{ y: contentY, opacity: contentOpacity }}
+        >
+          <img
+            src="/assets/monoburo-logo.svg"
+            alt="Монобюро"
+            className="w-full max-w-[920px] h-auto drop-shadow-[0_8px_40px_rgba(0,0,0,0.45)]"
+          />
+          <p className="mt-8 md:mt-10 max-w-[34rem] text-center font-unbounded text-[14px] md:text-[16px] leading-[1.5] text-white/88 text-balance">
             Дизайн и производство мебели для бизнеса, дома, офисов и HoReCa.
           </p>
           <button
             type="button"
             onClick={() => setIsRequestOpen(true)}
-            className="h-[50px] md:h-[57px] px-8 md:px-10 rounded-[20px] bg-black/40 backdrop-blur-xl border border-white/10 font-unbounded t-body text-white whitespace-nowrap transition-all duration-200 hover:bg-white/20 hover:-translate-y-px hover:shadow-[0_10px_24px_rgba(255,255,255,0.1)] pointer-events-auto"
+            className="btn-glass pointer-events-auto mt-7 md:mt-9 h-[52px] md:h-[56px] px-9 md:px-11 font-unbounded text-[14px] md:text-[15px] text-white"
           >
             Оставить заявку
           </button>
-        </div>
+        </motion.div>
 
-        {/* INTERACTIVE NAV */}
-        <div className="fixed z-50 left-1/2 -translate-x-1/2 top-[16px] md:top-[24px] group hero-nav">
-          <nav className="relative h-[50px] md:h-[57px] w-[65px] group-hover:w-[520px] max-md:w-[92vw] max-md:group-hover:w-[92vw] transition-all duration-500 ease-in-out rounded-[20px] max-md:rounded-[16px] bg-transparent overflow-hidden">
-            {/* Glassy background - strictly visible only on hover */}
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-xl border border-white/10 rounded-[20px] opacity-0 group-hover:opacity-100 max-md:opacity-100 transition-opacity duration-500" />
-            
-            <div className="absolute inset-0 flex items-center justify-end pr-[30px] pl-[75px] gap-[36px] opacity-0 group-hover:opacity-100 max-md:opacity-100 max-md:justify-between max-md:pr-4 max-md:pl-[56px] max-md:gap-3 transition-opacity duration-300 delay-150 pointer-events-none group-hover:pointer-events-auto max-md:pointer-events-auto">
-              <a href="#about" className="font-unbounded font-normal t-nav max-md:text-[13px] text-white/80 hover:text-white transition-colors whitespace-nowrap">О нас</a>
-              <a href="#projects" className="font-unbounded font-normal t-nav max-md:text-[13px] text-white/80 hover:text-white transition-colors whitespace-nowrap">Проекты</a>
-              <a href="#events" className="font-unbounded font-normal t-nav max-md:text-[13px] text-white/80 hover:text-white transition-colors whitespace-nowrap">Мероприятия</a>
-              <a href="#contacts" className="font-unbounded font-normal t-nav max-md:text-[13px] text-white/80 hover:text-white transition-colors whitespace-nowrap">Контакты</a>
-            </div>
-
-            {/* Logo icon */}
-            <div className="absolute left-[10px] size-[28px] md:size-[43px] top-[11px] md:top-[7px] z-10">
-              <img src="/assets/monoburo-mark.svg" alt="Monoburo" className="block size-full" />
+        <div className="fixed z-50 left-1/2 -translate-x-1/2 top-[14px] md:top-[20px] hero-nav w-[min(92vw,560px)]">
+          <nav className="relative flex h-[52px] md:h-[56px] items-center rounded-full border border-white/12 bg-black/35 px-2 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.25)]">
+            <a href="#hero" className="relative z-10 ml-1 flex size-[36px] md:size-[40px] shrink-0 items-center justify-center rounded-[12px] overflow-hidden">
+              <img src="/assets/monoburo-mark.svg" alt="Monoburo" className="size-full" />
+            </a>
+            <div className="flex flex-1 items-center justify-evenly gap-1 px-2 md:px-3">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="font-unbounded t-nav text-white/75 hover:text-white transition-colors whitespace-nowrap px-1"
+                >
+                  {link.label}
+                </a>
+              ))}
             </div>
           </nav>
         </div>
       </div>
+
       {isRequestOpen && <RequestModal onClose={() => setIsRequestOpen(false)} />}
     </section>
   );

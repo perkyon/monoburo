@@ -5,11 +5,50 @@
  import { createPortal } from "react-dom";
  import { ProjectModal, type Project } from "@/components/ProjectModal";
  import { InteriorItems } from "@/components/InteriorItems";
+ import { SectionTitle } from "@/components/SectionTitle";
 
  const cards = [
    { id: "home", title: "Дом", image: "/assets/home1.png" },
    { id: "horeca", title: "HoReCa", image: "/figma/tom7.jpg" },
    { id: "interior", title: "Предметы интерьера", image: "/assets/home3.png" }
+ ];
+
+ const homeProjects: Project[] = [
+   {
+     id: 1,
+     name: "ЖК Сердце",
+     image: "/assets/home1.png",
+     location: "Краснодар",
+     gallery: ["/assets/home1.png", "/assets/home2.png", "/assets/home3.png", "/assets/home4.png"]
+   },
+   {
+     id: 2,
+     name: "Частный интерьер",
+     image: "/assets/home2.png",
+     location: "Краснодар",
+     gallery: ["/assets/home2.png", "/assets/home3.png", "/assets/home4.png", "/assets/home5.png"]
+   },
+   {
+     id: 3,
+     name: "Домашняя кухня",
+     image: "/assets/home3.png",
+     location: "Краснодар",
+     gallery: ["/assets/home3.png", "/assets/home4.png", "/assets/home5.png", "/assets/home1.png"]
+   },
+   {
+     id: 4,
+     name: "Гостиная",
+     image: "/assets/home4.png",
+     location: "Краснодар",
+     gallery: ["/assets/home4.png", "/assets/home5.png", "/assets/home1.png", "/assets/home2.png"]
+   },
+   {
+     id: 5,
+     name: "Спальня",
+     image: "/assets/home5.png",
+     location: "Краснодар",
+     gallery: ["/assets/home5.png", "/assets/home1.png", "/assets/home2.png", "/assets/home3.png"]
+   }
  ];
 
  const horecaProjects: Project[] = [
@@ -152,24 +191,24 @@
  export const Projects = () => {
    const [isHoReCaOpen, setIsHoReCaOpen] = useState(false);
    const [isInteriorOpen, setIsInteriorOpen] = useState(false);
+   const [isHomeOpen, setIsHomeOpen] = useState(false);
    const [activeProject, setActiveProject] = useState<Project | null>(null);
-   const [openedFrom, setOpenedFrom] = useState<"horeca" | "interior" | null>(null);
+   const [openedFrom, setOpenedFrom] = useState<"horeca" | "interior" | "home" | null>(null);
    const horecaScrollRef = useRef<HTMLDivElement>(null);
    const interiorScrollRef = useRef<HTMLDivElement>(null);
+   const homeScrollRef = useRef<HTMLDivElement>(null);
 
    useEffect(() => {
-     if (!isHoReCaOpen && !isInteriorOpen) return;
+     if (!isHoReCaOpen && !isInteriorOpen && !isHomeOpen) return;
      return lockBodyScroll();
-   }, [isHoReCaOpen, isInteriorOpen]);
+   }, [isHoReCaOpen, isInteriorOpen, isHomeOpen]);
 
    return (
-    <section id="projects" className="relative z-10 w-full bg-white pt-4 max-md:mt-12 md:pt-6">
-       <div className="relative w-full max-w-[1440px] h-auto md:h-[820px] mx-auto px-4 md:px-0">
-        <div className="relative md:absolute left-0 md:left-[100px] top-0 w-full md:w-[1234px] h-[48px] md:h-[58px] rounded-full bg-black z-20 flex items-center px-[20px] md:px-[24px]">
-          <h2 className="text-white font-bold text-[30px]">Проекты</h2>
-        </div>
+    <section id="projects" className="relative z-10 w-full py-10 md:py-16">
+       <div className="container-page">
+        <SectionTitle eyebrow="Портфолио" title="Проекты" className="mb-8 md:mb-12" />
 
-        <div className="relative mt-10 md:absolute md:left-[100px] md:top-[100px] flex gap-[14px] md:gap-[22px] max-md:flex-col">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
           {cards.map((card) => (
             <button
               key={card.id}
@@ -183,27 +222,79 @@
                   setIsInteriorOpen(true);
                   return;
                 }
-                window.location.href = "/missing";
+                setIsHomeOpen(true);
               }}
-              className="group relative w-full md:w-[400px] h-[220px] md:h-[600px] rounded-[24px] md:rounded-[32px] overflow-hidden text-left transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
+              className="group relative w-full h-[240px] md:h-[560px] rounded-[24px] md:rounded-[32px] overflow-hidden text-left transition-transform duration-300 hover:-translate-y-1"
             >
               <Image
                 src={card.image}
                 alt={card.title}
                 fill
-                quality={95}
-                sizes="(max-width: 768px) 92vw, 400px"
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                quality={90}
+                sizes="(max-width: 768px) 92vw, 33vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
               />
-              <div className="absolute inset-0 bg-linear-to-b from-transparent via-black/20 to-black/70 transition-opacity duration-300 group-hover:opacity-90" />
-              <div className="absolute inset-0 rounded-[32px] ring-1 ring-white/0 transition-all duration-300 group-hover:ring-white/30" />
-              <div className="absolute bottom-[18px] left-1/2 -translate-x-1/2 text-center text-white font-semibold text-[18px]">
-                {card.title}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/75" />
+              <div className="absolute inset-x-0 bottom-0 p-5 md:p-7">
+                <p className="font-unbounded text-[11px] tracking-[0.18em] uppercase text-white/60 mb-2">
+                  Категория
+                </p>
+                <p className="font-unbounded text-[22px] md:text-[28px] font-medium text-white">
+                  {card.title}
+                </p>
               </div>
             </button>
           ))}
          </div>
        </div>
+
+       {isHomeOpen && typeof document !== "undefined" &&
+         createPortal(
+           <div
+             className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/90 backdrop-blur-sm px-4 md:px-6 py-6 md:py-10 overflow-hidden"
+             onClick={() => setIsHomeOpen(false)}
+           >
+            <div
+              className="relative w-full max-w-[1200px] max-h-[90vh] rounded-[24px] md:rounded-[32px] bg-white p-[20px] md:p-[40px] shadow-2xl overflow-x-hidden overflow-y-auto"
+              onClick={(event) => event.stopPropagation()}
+            >
+               <button
+                 type="button"
+                 aria-label="Закрыть"
+                 onClick={() => setIsHomeOpen(false)}
+                 className="absolute right-[20px] top-[16px] text-[28px] text-black/60 hover:text-black"
+               >
+                 ×
+               </button>
+               <h3 className="t-h2 text-black mb-4 md:mb-6">Проекты для дома</h3>
+               <div className="relative">
+                 <div ref={homeScrollRef} className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2">
+                 {homeProjects.map((project) => (
+                  <button
+                    key={project.id}
+                    type="button"
+                    onClick={() => {
+                      setIsHomeOpen(false);
+                      setOpenedFrom("home");
+                      setActiveProject(project);
+                    }}
+                    className="group relative h-[360px] md:h-[60vh] md:max-h-[720px] w-[78vw] md:w-[520px] shrink-0 snap-start overflow-hidden rounded-[20px] md:rounded-[28px] text-left"
+                  >
+                     <Image src={project.image} alt={project.name} fill className="object-cover" />
+                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+                     <div className="absolute bottom-[16px] left-[20px] text-white">
+                       <p className="t-h3 font-semibold">{project.name}</p>
+                       {project.location && <p className="t-body-sm text-white/80">{project.location}</p>}
+                     </div>
+                   </button>
+                 ))}
+               </div>
+               </div>
+             </div>
+           </div>,
+           document.body
+         )
+       }
 
        {isHoReCaOpen && typeof document !== "undefined" &&
          createPortal(
@@ -309,6 +400,7 @@
             setActiveProject(null);
             if (openedFrom === "horeca") setIsHoReCaOpen(true);
             if (openedFrom === "interior") setIsInteriorOpen(true);
+            if (openedFrom === "home") setIsHomeOpen(true);
             setOpenedFrom(null);
           }}
         />

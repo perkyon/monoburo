@@ -2,53 +2,40 @@
 
 import Image from "next/image";
 import { svgPaths } from "@/utils/svgPaths";
+import { SectionTitle } from "@/components/SectionTitle";
 
 export const Events = () => {
-  const logos = [1, 2, 3, 4, 5, 6, 7, 8];
+  const logos = [1, 2, 3, 4, 5, 6];
 
   return (
-    <section id="events" className="relative w-full bg-white stacked-card pt-8 max-md:mt-24 md:pt-12">
-      <div className="relative w-full max-w-[1440px] h-auto md:h-[952px] mx-auto overflow-hidden rounded-[24px] md:rounded-[40px] px-4 md:px-0 pt-3 md:pt-4" data-name="Мероприятия">
-        <div className="relative md:absolute left-0 md:left-[100px] top-0 right-0 md:right-[100px] w-full md:w-auto h-[48px] md:h-[58px] rounded-full bg-black z-20 flex items-center px-[20px] md:px-[24px]">
-          <h2 className="text-white font-bold text-[30px]">Мероприятия</h2>
+    <section id="events" className="relative w-full stacked-card py-10 md:py-16">
+      <div className="container-page">
+        <SectionTitle eyebrow="Коллаборации" title="Мероприятия" className="mb-8 md:mb-12" />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+          <div className="relative h-[280px] md:h-[520px] overflow-hidden rounded-[24px] md:rounded-[36px]">
+            <Image src="/assets/event1.png" alt="Мероприятие Monoburo" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+          </div>
+          <div className="relative h-[280px] md:h-[520px] overflow-hidden rounded-[24px] md:rounded-[36px]">
+            <Image src="/assets/event2.png" alt="Мероприятие Monoburo" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+          </div>
         </div>
 
-        {/* Мероприятия Gallery */}
-        <div className="relative w-full h-[320px] md:absolute md:h-[600px] md:left-[100px] md:top-[100px] md:w-[607px] z-10 overflow-hidden shadow-2xl rounded-[24px] md:rounded-[40px] mt-12 md:mt-0">
-          <Image
-            src="/assets/event1.png"
-            alt="Event 1"
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="relative w-full h-[320px] md:absolute md:h-[600px] md:left-[calc(50%+13px)] md:top-[100px] md:w-[606px] z-10 overflow-hidden shadow-2xl rounded-[24px] md:rounded-[40px] mt-4 md:mt-0">
-          <Image
-            src="/assets/event2.png"
-            alt="Event 2"
-            fill
-            className="object-cover"
-          />
-        </div>
-
-        {/* Бегущая строка логотипов - УБРАНО НАВЕДЕНИЕ */}
-        <div className="relative md:absolute md:bottom-[40px] left-0 w-full overflow-hidden h-[60px] mt-6 md:mt-0">
+        <div className="mt-8 md:mt-12 overflow-hidden rounded-full border border-black/8 bg-surface/70 py-4">
           <div className="flex items-center animate-marquee whitespace-nowrap">
             {logos.concat(logos).map((_, index) => (
               <div key={index} className="flex items-center shrink-0">
-                {/* IN HOME Logo */}
-                <div className="w-[234px] h-[28px] mx-10">
+                <div className="w-[200px] h-[24px] mx-10 opacity-70">
                   <svg className="w-full h-full" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 233.999 28.6417">
                     <path d={svgPaths.p1d871e32} fill="#010101" />
                   </svg>
                 </div>
-                {/* РУССКИЙ ДОМ Logo */}
-                <div className="relative w-[204px] h-[50px] mx-10">
-                  <Image 
-                    src="/assets/russian_house.png" 
-                    alt="Русский дом" 
-                    fill 
-                    className="object-contain pointer-events-none" 
+                <div className="relative w-[180px] h-[44px] mx-10 opacity-70">
+                  <Image
+                    src="/assets/russian_house.png"
+                    alt="Русский дом"
+                    fill
+                    className="object-contain pointer-events-none"
                   />
                 </div>
               </div>

@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Inter, Roboto } from "next/font/google";
 import "./globals.css";
 
 import { CustomCursor } from "@/components/CustomCursor";
@@ -13,18 +12,6 @@ import {
   siteOgImage,
   siteUrl,
 } from "@/utils/site";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const roboto = Roboto({
-  variable: "--font-roboto",
-  subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "700"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -94,7 +81,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#f3f3f0",
   colorScheme: "light",
 };
 
@@ -198,6 +185,12 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <Script
@@ -260,7 +253,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${roboto.variable} antialiased font-unbounded`}
+        className="antialiased"
       >
         <noscript>
           <img
