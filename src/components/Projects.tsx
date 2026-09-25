@@ -3,10 +3,11 @@
  import Image from "next/image";
  import { useEffect, useRef, useState } from "react";
  import { createPortal } from "react-dom";
+ import { motion } from "framer-motion";
  import { ProjectModal, type Project } from "@/components/ProjectModal";
  import { InteriorItems } from "@/components/InteriorItems";
  import { SectionTitle } from "@/components/SectionTitle";
-
+ import { HorizontalRail } from "@/components/HorizontalRail";
  const cards = [
    { id: "home", title: "Дом", image: "/assets/home1.png" },
    { id: "horeca", title: "HoReCa", image: "/figma/tom7.jpg" },
@@ -204,15 +205,22 @@
    }, [isHoReCaOpen, isInteriorOpen, isHomeOpen]);
 
    return (
-    <section id="projects" className="relative z-10 w-full py-10 md:py-16">
+    <section id="projects" className="relative z-10 w-full py-16 md:py-24 overflow-hidden">
        <div className="container-page">
-        <SectionTitle eyebrow="Портфолио" title="Проекты" className="mb-8 md:mb-12" />
+        <div className="mb-8 md:mb-12 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <SectionTitle eyebrow="Портфолио" title="Проекты" />
+          <p className="max-w-sm font-unbounded text-[13px] leading-relaxed text-black/45 md:text-right">
+            Горизонтальный поток категорий — тяни или крути колесо.
+          </p>
+        </div>
+       </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
-          {cards.map((card) => (
+        <HorizontalRail className="px-[20px] md:px-[48px] lg:px-[80px] pb-4">
+          {cards.map((card, index) => (
             <button
               key={card.id}
               type="button"
+              data-cursor="view"
               onClick={() => {
                 if (card.id === "horeca") {
                   setIsHoReCaOpen(true);
@@ -224,29 +232,36 @@
                 }
                 setIsHomeOpen(true);
               }}
-              className="group relative w-full h-[240px] md:h-[560px] rounded-[24px] md:rounded-[32px] overflow-hidden text-left transition-transform duration-300 hover:-translate-y-1"
+              className="group relative h-[58vh] min-h-[320px] max-h-[640px] w-[78vw] md:w-[42vw] lg:w-[34vw] shrink-0 snap-center overflow-hidden rounded-[24px] md:rounded-[32px] text-left"
             >
-              <Image
-                src={card.image}
-                alt={card.title}
-                fill
-                quality={90}
-                sizes="(max-width: 768px) 92vw, 33vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/75" />
-              <div className="absolute inset-x-0 bottom-0 p-5 md:p-7">
-                <p className="font-unbounded text-[11px] tracking-[0.18em] uppercase text-white/60 mb-2">
-                  Категория
+              <motion.div
+                layoutId={`category-cover-${card.id}`}
+                className="absolute inset-0"
+                transition={{ type: "spring", stiffness: 280, damping: 32 }}
+              >
+                <Image
+                  src={card.image}
+                  alt={card.title}
+                  fill
+                  quality={88}
+                  sizes="(max-width: 768px) 78vw, 42vw"
+                  className="object-cover transition-transform duration-[1.1s] ease-out group-hover:scale-[1.04]"
+                  priority={index === 0}
+                />
+              </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/15 to-black/70" />
+              <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+                <p className="mb-2 font-unbounded text-[11px] tracking-[0.2em] uppercase text-white/55">
+                  0{index + 1} — категория
                 </p>
-                <p className="font-unbounded text-[22px] md:text-[28px] font-medium text-white">
+                <p className="font-unbounded text-[28px] md:text-[40px] font-medium leading-none text-white">
                   {card.title}
                 </p>
               </div>
             </button>
           ))}
-         </div>
-       </div>
+          <div className="w-[8vw] shrink-0" aria-hidden />
+        </HorizontalRail>
 
        {isHomeOpen && typeof document !== "undefined" &&
          createPortal(
@@ -273,6 +288,7 @@
                   <button
                     key={project.id}
                     type="button"
+                    data-cursor="view"
                     onClick={() => {
                       setIsHomeOpen(false);
                       setOpenedFrom("home");
@@ -280,7 +296,9 @@
                     }}
                     className="group relative h-[360px] md:h-[60vh] md:max-h-[720px] w-[78vw] md:w-[520px] shrink-0 snap-start overflow-hidden rounded-[20px] md:rounded-[28px] text-left"
                   >
-                     <Image src={project.image} alt={project.name} fill className="object-cover" />
+                     <motion.div layoutId={`project-cover-home-${project.id}`} className="absolute inset-0">
+                       <Image src={project.image} alt={project.name} fill className="object-cover" />
+                     </motion.div>
                      <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
                      <div className="absolute bottom-[16px] left-[20px] text-white">
                        <p className="t-h3 font-semibold">{project.name}</p>
@@ -337,6 +355,7 @@
                   <button
                     key={project.id}
                     type="button"
+                    data-cursor="view"
                     onClick={() => {
                       setIsHoReCaOpen(false);
                       setOpenedFrom("horeca");
@@ -344,7 +363,9 @@
                     }}
                     className="group relative h-[360px] md:h-[60vh] md:max-h-[720px] w-[78vw] md:w-[520px] shrink-0 snap-start overflow-hidden rounded-[20px] md:rounded-[28px] text-left"
                   >
-                     <Image src={project.image} alt={project.name} fill className="object-cover" />
+                     <motion.div layoutId={`project-cover-horeca-${project.id}`} className="absolute inset-0">
+                       <Image src={project.image} alt={project.name} fill className="object-cover" />
+                     </motion.div>
                      <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
                      <div className="absolute bottom-[16px] left-[20px] text-white">
                        <p className="t-h3 font-semibold">{project.name}</p>
@@ -396,6 +417,7 @@
        {activeProject && (
         <ProjectModal
           project={activeProject}
+          layoutId={`project-cover-${openedFrom}-${activeProject.id}`}
           onClose={() => {
             setActiveProject(null);
             if (openedFrom === "horeca") setIsHoReCaOpen(true);

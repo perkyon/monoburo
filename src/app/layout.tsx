@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "./globals.css";
 
-import { CustomCursor } from "@/components/CustomCursor";
+import { Providers } from "@/components/Providers";
 import {
   contactPhoneRaw,
   siteDescription,
@@ -262,8 +262,7 @@ export default function RootLayout({
             alt=""
           />
         </noscript>
-        <CustomCursor />
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

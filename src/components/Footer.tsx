@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RequestModal } from "@/components/RequestModal";
+import { Magnetic } from "@/components/Magnetic";
 import {
   contactEmail,
   contactPhone,
@@ -38,33 +39,71 @@ const columns = [
 
 export const Footer = () => {
   const [isRequestOpen, setIsRequestOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const node = stageRef.current;
+    if (!node) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          const video = videoRef.current;
+          if (video) {
+            video.play().catch(() => {});
+          }
+        } else {
+          videoRef.current?.pause();
+        }
+      },
+      { rootMargin: "200px 0px", threshold: 0.15 }
+    );
+
+    io.observe(node);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!shouldLoad) return;
+    videoRef.current?.play().catch(() => {});
+  }, [shouldLoad]);
 
   return (
     <footer id="contacts" className="relative w-full overflow-hidden pt-6 md:pt-10">
       <div className="container-page pb-6 md:pb-10">
         <div className="relative overflow-hidden rounded-[28px] md:rounded-[40px] bg-black">
-          <div className="relative h-[360px] md:h-[640px]">
-            <video
-              className="absolute inset-0 size-full object-cover opacity-80"
-              src="/assets/monoburo-footer-bg.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+          <div ref={stageRef} className="relative h-[360px] md:h-[640px] bg-[#111]">
+            {shouldLoad ? (
+              <video
+                ref={videoRef}
+                className="absolute inset-0 size-full object-cover opacity-80"
+                src="/assets/monoburo-footer-bg.mp4"
+                muted
+                loop
+                playsInline
+                preload="none"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,#2a2a2a,transparent_55%),linear-gradient(180deg,#171717,black)]" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-4 px-6 pb-8 md:pb-12">
               <p className="font-unbounded text-[22px] md:text-[36px] text-white text-center text-balance max-w-[18ch] md:max-w-none">
                 Готовы обсудить ваш проект
               </p>
-              <button
-                type="button"
-                onClick={() => setIsRequestOpen(true)}
-                className="btn-glass h-[50px] px-8 font-unbounded text-[14px] text-white"
-              >
-                Оставить заявку
-              </button>
+              <Magnetic strength={0.32}>
+                <button
+                  type="button"
+                  data-cursor="cta"
+                  onClick={() => setIsRequestOpen(true)}
+                  className="btn-glass h-[50px] px-8 font-unbounded text-[14px] text-white"
+                >
+                  Оставить заявку
+                </button>
+              </Magnetic>
             </div>
           </div>
 

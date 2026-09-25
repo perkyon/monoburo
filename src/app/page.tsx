@@ -9,21 +9,13 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background">
       <Hero />
-      <div className="stacked-wrap stacked-2">
-        <Reveal>
-          <About />
-        </Reveal>
-      </div>
-      <div className="stacked-wrap stacked-1 stacked-tight">
-        <Reveal>
-          <Projects />
-        </Reveal>
-      </div>
-      <div className="stacked-wrap stacked-3">
-        <Reveal>
-          <Events />
-        </Reveal>
-      </div>
+      <About />
+      <Reveal>
+        <Projects />
+      </Reveal>
+      <Reveal>
+        <Events />
+      </Reveal>
       <Reveal>
         <Footer />
       </Reveal>

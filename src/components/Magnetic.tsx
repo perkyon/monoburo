@@ -3,26 +3,29 @@
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ReactNode, useRef } from "react";
 
-export const Magnetic = ({ children }: { children: ReactNode }) => {
+type MagneticProps = {
+  children: ReactNode;
+  strength?: number;
+  className?: string;
+};
+
+export function Magnetic({ children, strength = 0.28, className }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const springX = useSpring(x, { damping: 18, stiffness: 220, mass: 0.35 });
+  const springY = useSpring(y, { damping: 18, stiffness: 220, mass: 0.35 });
 
-  const springConfig = { damping: 15, stiffness: 150 };
-  const mouseXSpring = useSpring(x, springConfig);
-  const mouseYSpring = useSpring(y, springConfig);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const onMove = (e: React.MouseEvent) => {
     const rect = ref.current?.getBoundingClientRect();
-    if (rect) {
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      x.set(e.clientX - centerX);
-      y.set(e.clientY - centerY);
-    }
+    if (!rect) return;
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
+    x.set(dx * strength);
+    y.set(dy * strength);
   };
 
-  const handleMouseLeave = () => {
+  const onLeave = () => {
     x.set(0);
     y.set(0);
   };
@@ -30,12 +33,12 @@ export const Magnetic = ({ children }: { children: ReactNode }) => {
   return (
     <motion.div
       ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ x: mouseXSpring, y: mouseYSpring }}
+      className={className}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{ x: springX, y: springY }}
     >
       {children}
     </motion.div>
   );
-};
-
+}

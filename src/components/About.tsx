@@ -2,16 +2,18 @@
 
 import Image from "next/image";
 import { useMemo, useRef, useState } from "react";
-import { useMotionValueEvent, useScroll } from "framer-motion";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { SectionTitle } from "@/components/SectionTitle";
 
 export const About = () => {
-  const textRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({
-    target: textRef,
-    offset: ["start 0.9", "end 0.75"],
+    target: sectionRef,
+    offset: ["start start", "end end"],
   });
   const [progress, setProgress] = useState(0);
+  const imageScale = useTransform(scrollYProgress, [0, 1], [1.08, 1]);
+  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "-6%"]);
 
   useMotionValueEvent(scrollYProgress, "change", (value) => {
     setProgress(value);
@@ -36,39 +38,69 @@ export const About = () => {
   let wordIndex = 0;
 
   return (
-    <section id="about" className="relative w-full stacked-card py-10 md:py-16">
-      <div className="container-page">
-        <div className="overflow-hidden rounded-[28px] md:rounded-[40px] bg-surface shadow-[0_24px_80px_rgba(0,0,0,0.06)]">
-          <div className="grid md:grid-cols-2 gap-0">
-            <div className="relative min-h-[320px] md:min-h-[720px] overflow-hidden">
-              <Image
-                src="/assets/about_img.png"
-                alt="О мастерской Monoburo"
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover"
-              />
+    <section
+      id="about"
+      ref={sectionRef}
+      className="relative w-full"
+      style={{ height: "220vh" }}
+    >
+      <div className="sticky top-0 flex h-[100svh] items-stretch overflow-hidden">
+        <div className="container-page flex h-full w-full items-center py-10 md:py-0">
+          <div className="grid h-full max-h-[860px] w-full overflow-hidden rounded-[24px] md:rounded-[36px] bg-surface md:grid-cols-2 shadow-[0_30px_90px_rgba(0,0,0,0.08)]">
+            <div className="relative hidden min-h-full overflow-hidden md:block">
+              <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
+                <Image
+                  src="/assets/about_img.png"
+                  alt="О мастерской Monoburo"
+                  fill
+                  sizes="50vw"
+                  className="object-cover"
+                  priority={false}
+                />
+              </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
             </div>
 
-            <div className="flex flex-col justify-center p-6 md:p-12 lg:p-16">
-              <SectionTitle eyebrow="Студия" title="О нас" />
-              <div ref={textRef} className="mt-8 md:mt-10 flex flex-col gap-4 max-w-[36rem]">
+            <div className="relative flex flex-col justify-center px-6 py-10 md:px-12 lg:px-16">
+              <div className="mb-6 h-[2px] w-full overflow-hidden rounded-full bg-black/10">
+                <motion.div
+                  className="h-full origin-left bg-black"
+                  style={{ scaleX: scrollYProgress }}
+                />
+              </div>
+
+              <SectionTitle eyebrow="Мастерская" title="О нас" />
+
+              <div className="relative mt-6 min-h-[200px] overflow-hidden rounded-[20px] md:hidden">
+                <Image
+                  src="/assets/about_img.png"
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="100vw"
+                />
+              </div>
+
+              <div className="mt-8 md:mt-10 flex flex-col gap-4 max-w-[34rem]">
                 {wordMatrix.map((words, paragraphIndex) => (
-                  <p key={paragraphIndex} className="font-unbounded font-normal text-[18px] md:text-[22px] leading-[1.45] text-black/90">
+                  <p
+                    key={paragraphIndex}
+                    className="font-unbounded font-normal text-[17px] md:text-[22px] leading-[1.45] text-black"
+                  >
                     {words.map((word, idx) => {
                       const currentIndex = wordIndex;
                       wordIndex += 1;
                       const reveal = Math.min(
-                        Math.max(progress * totalWords - currentIndex, 0),
+                        Math.max(progress * totalWords * 0.92 - currentIndex, 0),
                         1
                       );
                       return (
                         <span
                           key={`${paragraphIndex}-${idx}`}
-                          className="inline-block will-change-transform mr-[6px]"
+                          className="mr-[6px] inline-block will-change-transform"
                           style={{
-                            opacity: 0.18 + reveal * 0.82,
-                            transform: `translateY(${(1 - reveal) * 6}px)`,
+                            opacity: 0.14 + reveal * 0.86,
+                            transform: `translateY(${(1 - reveal) * 8}px)`,
                           }}
                         >
                           {word}
