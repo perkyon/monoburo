@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export type Project = {
   id: number;
@@ -25,9 +26,10 @@ export type Project = {
 type ProjectModalProps = {
   project: Project;
   onClose: () => void;
+  layoutId?: string;
 };
 
-export const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
+export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const touchStartX = useRef<number>(0);
   const SWIPE_THRESHOLD = 50;
@@ -82,13 +84,19 @@ export const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
   }
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4 py-6 overflow-y-auto overscroll-contain"
+    <motion.div
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/80 backdrop-blur-sm px-4 py-6 overflow-y-auto overscroll-contain"
       onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
     >
-      <div
+      <motion.div
         className="relative w-full max-w-[1440px] max-h-[96vh] overflow-y-auto scrollbar-hide rounded-[24px] md:rounded-[40px] bg-white shadow-2xl"
         onClick={(event) => event.stopPropagation()}
+        initial={{ opacity: 0, y: 24, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: "spring", stiffness: 280, damping: 28 }}
       >
         <button
           type="button"
@@ -99,19 +107,37 @@ export const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
           ×
         </button>
 
-        <div className="px-4 md:px-[100px] pt-[40px] md:pt-[60px] pb-[24px] md:pb-[40px] text-center">
-          <h3 className="font-unbounded font-medium t-h3 text-black">{project.name}</h3>
-          {project.location && (
-            <p className="font-unbounded font-normal t-subtitle-sm text-black/70">{project.location}</p>
-          )}
+        <div className="relative mx-4 mt-4 md:mx-[40px] md:mt-8 h-[200px] md:h-[320px] overflow-hidden rounded-[20px] md:rounded-[28px]">
+          <motion.div
+            className="absolute inset-0"
+            layoutId={layoutId ?? `project-cover-${project.id}`}
+            transition={{ type: "spring", stiffness: 260, damping: 30 }}
+          >
+            <Image
+              src={project.image}
+              alt={project.name}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 1200px"
+              className="object-cover"
+            />
+          </motion.div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+          <div className="absolute bottom-0 left-0 p-5 md:p-8 text-white">
+            <h3 className="font-unbounded font-medium text-[26px] md:text-[36px] leading-none">{project.name}</h3>
+            {project.location && (
+              <p className="mt-2 font-unbounded text-[14px] text-white/75">{project.location}</p>
+            )}
+          </div>
         </div>
 
-        <div className="px-4 md:px-[100px] pb-[40px] md:pb-[80px]">
+        <div className="px-4 md:px-[100px] pt-[28px] md:pt-[40px] pb-[24px] md:pb-[40px]">
           <div className="flex gap-4 md:gap-8 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
             {gallery.map((src, index) => (
               <div key={`${project.id}-${index}`} className="shrink-0 snap-start">
                 <button
                   type="button"
+                  data-cursor="view"
                   onClick={() => setActiveIndex(index)}
                   className="group relative h-[240px] md:h-[550px] w-[78vw] max-w-[397px] overflow-hidden rounded-[20px] md:rounded-[40px]"
                   aria-label="Открыть фото"
@@ -183,11 +209,10 @@ export const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
             </div>
           </div>
         </div>
-      </div>
 
       {activeIndex !== null && (
         <div
-          className="fixed inset-0 z-110 flex items-center justify-center bg-black/70 backdrop-blur-[2px]"
+          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/70 backdrop-blur-[2px]"
           onClick={() => setActiveIndex(null)}
         >
           <div
@@ -242,7 +267,8 @@ export const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
           </div>
         </div>
       )}
-    </div>,
+      </motion.div>
+    </motion.div>,
     document.body
   );
 };
