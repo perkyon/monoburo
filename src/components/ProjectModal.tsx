@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { getProjectTheme, type ProjectTheme } from "@/utils/projectThemes";
 
 export type Project = {
   id: number;
@@ -11,6 +12,7 @@ export type Project = {
   image: string;
   location?: string;
   gallery?: string[];
+  theme?: Partial<ProjectTheme>;
   details?: {
     lead: string;
     story: string;
@@ -33,6 +35,7 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const touchStartX = useRef<number>(0);
   const SWIPE_THRESHOLD = 50;
+  const theme = getProjectTheme(project);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -59,29 +62,32 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
   const gallery = project.gallery?.length ? project.gallery : [project.image];
 
   useEffect(() => {
-    if (activeIndex === null) {
-      return;
-    }
-
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        if (activeIndex !== null) setActiveIndex(null);
+        else onClose();
+        return;
+      }
+      if (activeIndex === null) return;
       if (event.key === "ArrowRight") {
         setActiveIndex((prev) => (prev === null ? 0 : (prev + 1) % gallery.length));
       }
       if (event.key === "ArrowLeft") {
         setActiveIndex((prev) => (prev === null ? 0 : (prev - 1 + gallery.length) % gallery.length));
       }
-      if (event.key === "Escape") {
-        setActiveIndex(null);
-      }
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeIndex, gallery.length]);
+  }, [activeIndex, gallery.length, onClose]);
 
-  if (typeof document === "undefined") {
-    return null;
-  }
+  if (typeof document === "undefined") return null;
+
+  const metrics = [
+    { label: "Срок", value: project.details?.duration ?? "по запросу" },
+    { label: "Бюджет", value: project.details?.budget ?? "по запросу" },
+    { label: "Материалы", value: project.details?.materials ?? "по запросу" },
+    { label: "Сложности", value: project.details?.challenges ?? "по запросу" },
+  ];
 
   return createPortal(
     <motion.div
@@ -89,25 +95,27 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
       onClick={onClose}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
     >
       <motion.div
-        className="relative w-full max-w-[1440px] max-h-[96vh] overflow-y-auto scrollbar-hide rounded-[24px] md:rounded-[40px] bg-white shadow-2xl"
+        className="relative w-full max-w-[1200px] max-h-[96vh] overflow-y-auto scrollbar-hide rounded-[24px] md:rounded-[36px] bg-white shadow-2xl"
         onClick={(event) => event.stopPropagation()}
-        initial={{ opacity: 0, y: 24, scale: 0.985 }}
+        initial={{ opacity: 0, y: 28, scale: 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ type: "spring", stiffness: 280, damping: 28 }}
+        style={{ color: theme.ink }}
       >
         <button
           type="button"
           aria-label="Закрыть"
           onClick={onClose}
-          className="absolute right-[24px] top-[24px] z-10 flex size-[40px] items-center justify-center rounded-full bg-white text-black shadow-[0_4px_12px_rgba(0,0,0,0.2)]"
+          className="absolute right-4 top-4 z-20 flex size-10 items-center justify-center rounded-full text-white shadow-md backdrop-blur-md"
+          style={{ background: theme.accent }}
         >
           ×
         </button>
 
-        <div className="relative mx-4 mt-4 md:mx-[40px] md:mt-8 h-[200px] md:h-[320px] overflow-hidden rounded-[20px] md:rounded-[28px]">
+        {/* Hero */}
+        <div className="relative h-[240px] md:h-[380px] overflow-hidden rounded-t-[24px] md:rounded-t-[36px]">
           <motion.div
             className="absolute inset-0"
             layoutId={layoutId ?? `project-cover-${project.id}`}
@@ -122,135 +130,169 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
               className="object-cover"
             />
           </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
-          <div className="absolute bottom-0 left-0 p-5 md:p-8 text-white">
-            <h3 className="font-unbounded font-medium text-[26px] md:text-[36px] leading-none">{project.name}</h3>
+          <div className="absolute inset-0" style={{ background: theme.heroOverlay }} />
+          <div className="absolute bottom-0 left-0 right-0 p-5 md:p-10 text-white">
+            <p
+              className="mb-2 font-unbounded text-[11px] tracking-[0.2em] uppercase"
+              style={{ color: "rgba(255,255,255,0.7)" }}
+            >
+              {theme.label}
+            </p>
+            <h3 className="font-unbounded font-medium text-[28px] md:text-[44px] leading-[1.05]">
+              {project.name}
+            </h3>
             {project.location && (
-              <p className="mt-2 font-unbounded text-[14px] text-white/75">{project.location}</p>
+              <p className="mt-2 font-unbounded text-[13px] md:text-[15px] text-white/70">
+                {project.location}
+              </p>
             )}
           </div>
+          <div
+            className="absolute left-0 top-0 h-full w-[4px] md:w-[6px]"
+            style={{ background: theme.accent }}
+            aria-hidden
+          />
         </div>
 
-        <div className="px-4 md:px-[100px] pt-[28px] md:pt-[40px] pb-[24px] md:pb-[40px]">
-          <div className="flex gap-4 md:gap-8 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+        {/* Lead */}
+        <div className="px-5 md:px-10 pt-6 md:pt-8">
+          <p className="font-unbounded text-[18px] md:text-[24px] leading-[1.35] max-w-[36ch]">
+            {project.details?.lead ?? "Короткое описание проекта по запросу."}
+          </p>
+        </div>
+
+        {/* Gallery */}
+        <div className="px-5 md:px-10 pt-6 md:pt-8">
+          <div className="flex gap-3 md:gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-1">
             {gallery.map((src, index) => (
-              <div key={`${project.id}-${index}`} className="shrink-0 snap-start">
-                <button
-                  type="button"
-                  data-cursor="view"
-                  onClick={() => setActiveIndex(index)}
-                  className="group relative h-[240px] md:h-[550px] w-[78vw] max-w-[397px] overflow-hidden rounded-[20px] md:rounded-[40px]"
-                  aria-label="Открыть фото"
-                >
-                  <Image
-                    src={src}
-                    alt={project.name}
-                    fill
-                    sizes="(max-width: 768px) 78vw, 397px"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                </button>
-              </div>
+              <button
+                key={`${project.id}-${index}`}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                className="group relative h-[200px] md:h-[320px] w-[70vw] max-w-[300px] shrink-0 snap-start overflow-hidden rounded-[18px] md:rounded-[24px] text-left"
+                aria-label={`Фото ${index + 1}`}
+                style={{ boxShadow: `0 0 0 1px ${theme.accentSoft}` }}
+              >
+                <Image
+                  src={src}
+                  alt={`${project.name} — ${index + 1}`}
+                  fill
+                  sizes="300px"
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                />
+              </button>
             ))}
           </div>
         </div>
 
-        <div className="px-4 md:px-[100px] pb-[40px] md:pb-[80px]">
-          <div className="rounded-[24px] md:rounded-[32px] bg-[#F7F7F7] border border-black/5 p-[20px] md:p-[32px]">
-            <div className="text-left">
-              <p className="font-unbounded font-semibold text-[24px] md:text-[32px] leading-[1.15] text-black mb-2">
-                {project.name}
-              </p>
-              <p className="font-unbounded t-body text-black/60 mb-6">
-                {project.details?.lead ?? "Короткое описание проекта по запросу."}
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-[1.35fr_0.9fr] gap-6 md:gap-8">
-                <div className="space-y-4">
-                  <p className="font-unbounded t-body-sm leading-relaxed text-black/75">
-                    {project.details?.story ?? "Подробности и контекст — по запросу."}
+        {/* Story + metrics */}
+        <div className="px-5 md:px-10 py-8 md:py-10">
+          <div
+            className="rounded-[22px] md:rounded-[28px] p-5 md:p-8"
+            style={{ background: theme.panel }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-[1.4fr_0.85fr] gap-7 md:gap-10">
+              <div className="space-y-5">
+                <p className="font-unbounded text-[14px] md:text-[15px] leading-relaxed opacity-80">
+                  {project.details?.story ?? "Подробности и контекст — по запросу."}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {(project.details?.highlights ?? []).map((item) => (
+                    <span
+                      key={item}
+                      className="px-3 py-1.5 rounded-full font-unbounded text-[11px] uppercase tracking-wide"
+                      style={{
+                        background: theme.accentSoft,
+                        color: theme.accent,
+                      }}
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+                <div
+                  className="rounded-[16px] border px-4 py-3"
+                  style={{ borderColor: theme.accentSoft }}
+                >
+                  <p className="font-unbounded text-[11px] uppercase tracking-[0.16em] opacity-50 mb-1">
+                    Результат
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {(project.details?.highlights ?? []).map((item) => (
-                      <span
-                        key={item}
-                        className="px-3 py-1.5 rounded-full bg-white text-black/70 t-caption uppercase tracking-wide border border-black/10"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="font-unbounded t-body-sm leading-relaxed text-black/70">
+                  <p className="font-unbounded text-[14px] leading-relaxed opacity-85">
                     {project.details?.result ?? "Результат и эффект — по запросу."}
                   </p>
                 </div>
+              </div>
 
-                <div className="space-y-3">
-                  <p className="font-unbounded t-caption text-black/50 uppercase tracking-wide">Метрики</p>
-                  <div className="rounded-[18px] bg-white px-4 py-3 shadow-[0_8px_20px_rgba(0,0,0,0.06)]">
-                    <p className="font-unbounded t-caption text-black/50 uppercase tracking-wide">Срок</p>
-                    <p className="font-unbounded t-body text-black">{project.details?.duration ?? "по запросу"}</p>
+              <div className="space-y-3">
+                {metrics.map((m) => (
+                  <div
+                    key={m.label}
+                    className="rounded-[16px] bg-white/80 px-4 py-3 backdrop-blur-sm"
+                    style={{ boxShadow: `inset 3px 0 0 ${theme.accent}` }}
+                  >
+                    <p className="font-unbounded text-[10px] uppercase tracking-[0.16em] opacity-45">
+                      {m.label}
+                    </p>
+                    <p className="font-unbounded text-[15px] mt-0.5">{m.value}</p>
                   </div>
-                  <div className="rounded-[18px] bg-white px-4 py-3 shadow-[0_8px_20px_rgba(0,0,0,0.06)]">
-                    <p className="font-unbounded t-caption text-black/50 uppercase tracking-wide">Бюджет</p>
-                    <p className="font-unbounded t-body text-black">{project.details?.budget ?? "по запросу"}</p>
-                  </div>
-                  <div className="rounded-[18px] bg-white px-4 py-3 shadow-[0_8px_20px_rgba(0,0,0,0.06)]">
-                    <p className="font-unbounded t-caption text-black/50 uppercase tracking-wide">Материалы</p>
-                    <p className="font-unbounded t-body-sm text-black">{project.details?.materials ?? "по запросу"}</p>
-                  </div>
-                  <div className="rounded-[18px] bg-white px-4 py-3 shadow-[0_8px_20px_rgba(0,0,0,0.06)]">
-                    <p className="font-unbounded t-caption text-black/50 uppercase tracking-wide">Сложности</p>
-                    <p className="font-unbounded t-body-sm text-black">{project.details?.challenges ?? "по запросу"}</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
+      </motion.div>
 
       {activeIndex !== null && (
         <div
-          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/70 backdrop-blur-[2px]"
+          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/75 backdrop-blur-[2px]"
           onClick={() => setActiveIndex(null)}
         >
           <div
-            className="relative max-h-[90vh] max-w-[90vw] rounded-[24px] shadow-2xl"
+            className="relative max-h-[90vh] max-w-[90vw]"
             onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
               aria-label="Закрыть фото"
               onClick={() => setActiveIndex(null)}
-              className="absolute -right-3 -top-3 z-10 flex size-[36px] items-center justify-center rounded-full bg-white text-black shadow-[0_6px_16px_rgba(0,0,0,0.25)]"
+              className="absolute -right-3 -top-3 z-10 flex size-9 items-center justify-center rounded-full bg-white text-black shadow-lg"
             >
               ×
             </button>
             <button
               type="button"
-              aria-label="Предыдущее фото"
-              onClick={() => setActiveIndex((prev) => (prev === null ? 0 : (prev - 1 + gallery.length) % gallery.length))}
-              className="absolute left-4 top-1/2 z-10 -translate-y-1/2 hidden md:flex size-[44px] items-center justify-center rounded-full bg-white/90 text-black shadow-[0_6px_16px_rgba(0,0,0,0.2)]"
+              aria-label="Предыдущее"
+              onClick={() =>
+                setActiveIndex((prev) =>
+                  prev === null ? 0 : (prev - 1 + gallery.length) % gallery.length
+                )
+              }
+              className="absolute left-3 top-1/2 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-black shadow md:flex"
             >
               ‹
             </button>
             <button
               type="button"
-              aria-label="Следующее фото"
-              onClick={() => setActiveIndex((prev) => (prev === null ? 0 : (prev + 1) % gallery.length))}
-              className="absolute right-4 top-1/2 z-10 -translate-y-1/2 hidden md:flex size-[44px] items-center justify-center rounded-full bg-white/90 text-black shadow-[0_6px_16px_rgba(0,0,0,0.2)]"
+              aria-label="Следующее"
+              onClick={() =>
+                setActiveIndex((prev) => (prev === null ? 0 : (prev + 1) % gallery.length))
+              }
+              className="absolute right-3 top-1/2 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-black shadow md:flex"
             >
               ›
             </button>
             <div
-              className="relative h-[80vh] w-[80vw] max-h-[80vh] max-w-[80vw] overflow-hidden rounded-[20px] touch-pan-y"
-              onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+              className="relative h-[80vh] w-[80vw] overflow-hidden rounded-[20px]"
+              onTouchStart={(e) => {
+                touchStartX.current = e.touches[0].clientX;
+              }}
               onTouchEnd={(e) => {
                 const delta = e.changedTouches[0].clientX - touchStartX.current;
                 if (Math.abs(delta) < SWIPE_THRESHOLD) return;
                 if (delta > 0) {
-                  setActiveIndex((prev) => (prev === null ? 0 : (prev - 1 + gallery.length) % gallery.length));
+                  setActiveIndex((prev) =>
+                    prev === null ? 0 : (prev - 1 + gallery.length) % gallery.length
+                  );
                 } else {
                   setActiveIndex((prev) => (prev === null ? 0 : (prev + 1) % gallery.length));
                 }
@@ -261,13 +303,12 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
                 alt={project.name}
                 fill
                 sizes="80vw"
-                className="object-contain transition-transform duration-300 ease-out"
+                className="object-contain"
               />
             </div>
           </div>
         </div>
       )}
-      </motion.div>
     </motion.div>,
     document.body
   );

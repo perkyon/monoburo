@@ -47,13 +47,6 @@ body {
   font-family: var(--font-manrope-face), system-ui, sans-serif;
 }
 
-html.has-soft-cursor,
-html.has-soft-cursor body,
-html.has-soft-cursor a,
-html.has-soft-cursor button {
-  cursor: none;
-}
-
 body.modal-open .hero-nav {
   opacity: 0;
   pointer-events: none;

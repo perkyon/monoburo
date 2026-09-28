@@ -7,14 +7,18 @@ type HorizontalRailProps = {
   className?: string;
 };
 
-/** Signature: horizontal cinematic rail — wheel + drag */
+/**
+ * Horizontal cinematic rail.
+ * Drag only after movement threshold so clicks still fire.
+ */
 export function HorizontalRail({ children, className = "" }: HorizontalRailProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const drag = useRef({
-    active: false,
-    moved: false,
+  const state = useRef({
+    pointerId: -1,
+    dragging: false,
     startX: 0,
     scrollLeft: 0,
+    suppressClick: false,
   });
   const [grabbing, setGrabbing] = useState(false);
 
@@ -23,10 +27,11 @@ export function HorizontalRail({ children, className = "" }: HorizontalRailProps
     if (!el) return;
 
     const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
       if (el.scrollWidth <= el.clientWidth + 4) return;
-      e.preventDefault();
-      el.scrollLeft += e.deltaY + e.deltaX;
+      if (Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+      }
     };
 
     el.addEventListener("wheel", onWheel, { passive: false });
@@ -36,40 +41,66 @@ export function HorizontalRail({ children, className = "" }: HorizontalRailProps
   return (
     <div
       ref={ref}
-      data-cursor="drag"
-      className={`flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none ${grabbing ? "cursor-grabbing" : ""} ${className}`}
+      className={`flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory select-none [&_button]:cursor-pointer ${
+        grabbing ? "cursor-grabbing" : "cursor-grab"
+      } ${className}`}
       onPointerDown={(e) => {
+        if (e.button !== 0) return;
+        // Don't steal gestures from nested scroll areas / controls
+        const target = e.target as HTMLElement | null;
+        if (target?.closest("a, input, textarea, select")) return;
         const el = ref.current;
         if (!el) return;
-        drag.current = {
-          active: true,
-          moved: false,
+        state.current = {
+          pointerId: e.pointerId,
+          dragging: false,
           startX: e.clientX,
           scrollLeft: el.scrollLeft,
+          suppressClick: false,
         };
-        setGrabbing(true);
-        el.setPointerCapture(e.pointerId);
       }}
       onPointerMove={(e) => {
-        if (!drag.current.active || !ref.current) return;
-        const dx = e.clientX - drag.current.startX;
-        if (Math.abs(dx) > 6) drag.current.moved = true;
-        ref.current.scrollLeft = drag.current.scrollLeft - dx;
+        const el = ref.current;
+        const s = state.current;
+        if (!el || s.pointerId !== e.pointerId) return;
+
+        const dx = e.clientX - s.startX;
+        if (!s.dragging) {
+          if (Math.abs(dx) < 12) return;
+          s.dragging = true;
+          s.suppressClick = true;
+          setGrabbing(true);
+          try {
+            el.setPointerCapture(e.pointerId);
+          } catch {
+            /* ignore */
+          }
+        }
+        el.scrollLeft = s.scrollLeft - dx;
       }}
       onPointerUp={(e) => {
-        drag.current.active = false;
+        const el = ref.current;
+        const s = state.current;
+        if (s.pointerId !== e.pointerId) return;
+        try {
+          if (el?.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+        } catch {
+          /* ignore */
+        }
+        s.pointerId = -1;
+        s.dragging = false;
         setGrabbing(false);
-        ref.current?.releasePointerCapture(e.pointerId);
       }}
       onPointerCancel={() => {
-        drag.current.active = false;
+        state.current.pointerId = -1;
+        state.current.dragging = false;
         setGrabbing(false);
       }}
       onClickCapture={(e) => {
-        if (drag.current.moved) {
+        if (state.current.suppressClick) {
           e.preventDefault();
           e.stopPropagation();
-          drag.current.moved = false;
+          state.current.suppressClick = false;
         }
       }}
     >

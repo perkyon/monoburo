@@ -39,7 +39,6 @@ export const Hero = () => {
           />
         </motion.div>
 
-        {/* craft vignette */}
         <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.25)_55%,rgba(0,0,0,0.72)_100%)]" />
         <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/50 via-transparent to-black/75" />
 
@@ -73,7 +72,6 @@ export const Hero = () => {
             <Magnetic strength={0.35}>
               <button
                 type="button"
-                data-cursor="cta"
                 onClick={() => setIsRequestOpen(true)}
                 className="btn-glass h-[52px] md:h-[56px] px-10 md:px-12 font-unbounded text-[14px] md:text-[15px] text-white"
               >
@@ -95,24 +93,25 @@ export const Hero = () => {
           </motion.div>
         </div>
 
-        <div className="fixed z-50 left-1/2 top-[14px] md:top-[18px] hero-nav w-[min(92vw,540px)] -translate-x-1/2">
-          <nav className="relative flex h-[50px] md:h-[54px] items-center rounded-full border border-white/12 bg-black/40 px-2 backdrop-blur-xl">
-            <a
-              href="#hero"
-              className="relative z-10 ml-1 flex size-[34px] md:size-[38px] shrink-0 items-center justify-center overflow-hidden rounded-[11px]"
-            >
-              <img src="/assets/monoburo-mark.svg" alt="Monoburo" className="size-full" />
-            </a>
-            <div className="flex flex-1 items-center justify-evenly gap-1 px-2 md:px-3">
+        {/* Logo pill → expands on hover (desktop), always open on mobile */}
+        <div className="fixed z-50 left-1/2 top-[14px] md:top-[20px] -translate-x-1/2 group hero-nav">
+          <nav className="relative h-[50px] md:h-[56px] w-[58px] md:w-[64px] max-md:w-[min(92vw,520px)] group-hover:w-[min(92vw,520px)] transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden rounded-full">
+            <div className="absolute inset-0 rounded-full border border-white/12 bg-black/40 backdrop-blur-xl opacity-0 group-hover:opacity-100 max-md:opacity-100 transition-opacity duration-400" />
+
+            <div className="absolute inset-0 flex items-center justify-end gap-5 md:gap-7 pr-5 md:pr-7 pl-[56px] md:pl-[64px] opacity-0 group-hover:opacity-100 max-md:opacity-100 transition-opacity duration-300 delay-100 pointer-events-none group-hover:pointer-events-auto max-md:pointer-events-auto">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="font-unbounded t-nav whitespace-nowrap px-1 text-white/70 transition-colors hover:text-white"
+                  className="font-unbounded t-nav whitespace-nowrap text-white/75 transition-colors hover:text-white"
                 >
                   {link.label}
                 </a>
               ))}
+            </div>
+
+            <div className="absolute left-[8px] md:left-[10px] top-1/2 z-10 size-[34px] md:size-[36px] -translate-y-1/2 overflow-hidden rounded-[10px]">
+              <img src="/assets/monoburo-mark.svg" alt="Monoburo" className="block size-full" />
             </div>
           </nav>
         </div>

@@ -20,6 +20,17 @@
      name: "ЖК Сердце",
      image: "/assets/home1.png",
      location: "Краснодар",
+     details: {
+       lead: "Жилой интерьер с мягкой палитрой и спокойной геометрией.",
+       story:
+         "Собрали пространство под семейный ритм: светлые поверхности, тёплое дерево и мебель без визуального шума. Акцент — на удобных зонах хранения и сценариях освещения.",
+       highlights: ["семейный сценарий", "хранение", "мягкий свет", "натуральные фактуры"],
+       result: "Цельный интерьер, где удобно жить каждый день.",
+       duration: "45 дней",
+       budget: "по запросу",
+       materials: "шпон, эмаль, текстиль",
+       challenges: "нестандартные ниши, согласование инженерии",
+     },
      gallery: ["/assets/home1.png", "/assets/home2.png", "/assets/home3.png", "/assets/home4.png"]
    },
    {
@@ -27,6 +38,17 @@
      name: "Частный интерьер",
      image: "/assets/home2.png",
      location: "Краснодар",
+     details: {
+       lead: "Приватный интерьер с характером заказчика.",
+       story:
+         "От планировки до деталей отделки — один язык материалов и пропорций. Мебель сделана под конкретные зоны, без лишних предметов.",
+       highlights: ["индивидуальный план", "мебель на заказ", "единый материал"],
+       result: "Интерьер читается как цельная история, а не набор вещей.",
+       duration: "52 дня",
+       budget: "по запросу",
+       materials: "массив, шпон, металл",
+       challenges: "сложная геометрия помещений",
+     },
      gallery: ["/assets/home2.png", "/assets/home3.png", "/assets/home4.png", "/assets/home5.png"]
    },
    {
@@ -34,6 +56,17 @@
      name: "Домашняя кухня",
      image: "/assets/home3.png",
      location: "Краснодар",
+     details: {
+       lead: "Кухня как рабочий инструмент и центр дома.",
+       story:
+         "Продумали маршруты, хранение и зоны готовки. Фасады и столешница подобраны под долгую эксплуатацию без потери вида.",
+       highlights: ["эргономика", "износостойкость", "скрытое хранение"],
+       result: "Кухня, которая держит нагрузку и выглядит спокойно.",
+       duration: "36 дней",
+       budget: "по запросу",
+       materials: "МДФ, шпон, камень",
+       challenges: "вентиляция, узкие проходы",
+     },
      gallery: ["/assets/home3.png", "/assets/home4.png", "/assets/home5.png", "/assets/home1.png"]
    },
    {
@@ -41,6 +74,17 @@
      name: "Гостиная",
      image: "/assets/home4.png",
      location: "Краснодар",
+     details: {
+       lead: "Гостиная для встреч и тихого вечера.",
+       story:
+         "Мягкая мебель, спокойный свет и композиция под ТВ-зону. Фокус на комфорте посадки и акустике.",
+       highlights: ["посадка", "свет", "ТВ-зона"],
+       result: "Пространство, где хочется остаться.",
+       duration: "28 дней",
+       budget: "по запросу",
+       materials: "ткань, дерево, металл",
+       challenges: "акустика открытой планировки",
+     },
      gallery: ["/assets/home4.png", "/assets/home5.png", "/assets/home1.png", "/assets/home2.png"]
    },
    {
@@ -48,6 +92,17 @@
      name: "Спальня",
      image: "/assets/home5.png",
      location: "Краснодар",
+     details: {
+       lead: "Спальня без визуального шума.",
+       story:
+         "Приглушённая палитра, мягкий текстиль и скрытое хранение. Свет настроен на вечерний сценарий.",
+       highlights: ["тихая палитра", "хранение", "вечерний свет"],
+       result: "Комната для восстановления, а не для демонстрации.",
+       duration: "24 дня",
+       budget: "по запросу",
+       materials: "текстиль, шпон, эмаль",
+       challenges: "мало естественного света",
+     },
      gallery: ["/assets/home5.png", "/assets/home1.png", "/assets/home2.png", "/assets/home3.png"]
    }
  ];
@@ -210,7 +265,7 @@
         <div className="mb-8 md:mb-12 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <SectionTitle eyebrow="Портфолио" title="Проекты" />
           <p className="max-w-sm font-unbounded text-[13px] leading-relaxed text-black/45 md:text-right">
-            Горизонтальный поток категорий — тяни или крути колесо.
+            Листай горизонтально — кликай, чтобы открыть.
           </p>
         </div>
        </div>
@@ -220,7 +275,6 @@
             <button
               key={card.id}
               type="button"
-              data-cursor="view"
               onClick={() => {
                 if (card.id === "horeca") {
                   setIsHoReCaOpen(true);
@@ -288,7 +342,6 @@
                   <button
                     key={project.id}
                     type="button"
-                    data-cursor="view"
                     onClick={() => {
                       setIsHomeOpen(false);
                       setOpenedFrom("home");
@@ -355,7 +408,6 @@
                   <button
                     key={project.id}
                     type="button"
-                    data-cursor="view"
                     onClick={() => {
                       setIsHoReCaOpen(false);
                       setOpenedFrom("horeca");

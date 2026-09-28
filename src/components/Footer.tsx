@@ -97,9 +97,8 @@ export const Footer = () => {
               <Magnetic strength={0.32}>
                 <button
                   type="button"
-                  data-cursor="cta"
-                  onClick={() => setIsRequestOpen(true)}
-                  className="btn-glass h-[50px] px-8 font-unbounded text-[14px] text-white"
+                onClick={() => setIsRequestOpen(true)}
+                className="btn-glass h-[50px] px-8 font-unbounded text-[14px] text-white"
                 >
                   Оставить заявку
                 </button>
