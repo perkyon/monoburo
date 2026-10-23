@@ -1,484 +1,147 @@
- "use client";
+"use client";
 
- import Image from "next/image";
- import { useEffect, useRef, useState } from "react";
- import { createPortal } from "react-dom";
- import { motion } from "framer-motion";
- import { ProjectModal, type Project } from "@/components/ProjectModal";
- import { InteriorItems } from "@/components/InteriorItems";
- import { SectionTitle } from "@/components/SectionTitle";
- import { HorizontalRail } from "@/components/HorizontalRail";
- const cards = [
-   { id: "home", title: "Дом", image: "/assets/home1.png" },
-   { id: "horeca", title: "HoReCa", image: "/figma/tom7.jpg" },
-   { id: "interior", title: "Предметы интерьера", image: "/assets/home3.png" }
- ];
+import Image from "next/image";
+import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { ProjectModal, type Project, type ProjectCategory } from "@/components/ProjectModal";
+import { SectionTitle } from "@/components/SectionTitle";
+import { allProjects, CATEGORIES, relatedProjects } from "@/data/projects";
+import { getProjectTheme } from "@/utils/projectThemes";
 
- const homeProjects: Project[] = [
-   {
-     id: 1,
-     name: "ЖК Сердце",
-     image: "/assets/home1.png",
-     location: "Краснодар",
-     details: {
-       lead: "Жилой интерьер с мягкой палитрой и спокойной геометрией.",
-       story:
-         "Собрали пространство под семейный ритм: светлые поверхности, тёплое дерево и мебель без визуального шума. Акцент — на удобных зонах хранения и сценариях освещения.",
-       highlights: ["семейный сценарий", "хранение", "мягкий свет", "натуральные фактуры"],
-       result: "Цельный интерьер, где удобно жить каждый день.",
-       duration: "45 дней",
-       budget: "по запросу",
-       materials: "шпон, эмаль, текстиль",
-       challenges: "нестандартные ниши, согласование инженерии",
-     },
-     gallery: ["/assets/home1.png", "/assets/home2.png", "/assets/home3.png", "/assets/home4.png"]
-   },
-   {
-     id: 2,
-     name: "Частный интерьер",
-     image: "/assets/home2.png",
-     location: "Краснодар",
-     details: {
-       lead: "Приватный интерьер с характером заказчика.",
-       story:
-         "От планировки до деталей отделки — один язык материалов и пропорций. Мебель сделана под конкретные зоны, без лишних предметов.",
-       highlights: ["индивидуальный план", "мебель на заказ", "единый материал"],
-       result: "Интерьер читается как цельная история, а не набор вещей.",
-       duration: "52 дня",
-       budget: "по запросу",
-       materials: "массив, шпон, металл",
-       challenges: "сложная геометрия помещений",
-     },
-     gallery: ["/assets/home2.png", "/assets/home3.png", "/assets/home4.png", "/assets/home5.png"]
-   },
-   {
-     id: 3,
-     name: "Домашняя кухня",
-     image: "/assets/home3.png",
-     location: "Краснодар",
-     details: {
-       lead: "Кухня как рабочий инструмент и центр дома.",
-       story:
-         "Продумали маршруты, хранение и зоны готовки. Фасады и столешница подобраны под долгую эксплуатацию без потери вида.",
-       highlights: ["эргономика", "износостойкость", "скрытое хранение"],
-       result: "Кухня, которая держит нагрузку и выглядит спокойно.",
-       duration: "36 дней",
-       budget: "по запросу",
-       materials: "МДФ, шпон, камень",
-       challenges: "вентиляция, узкие проходы",
-     },
-     gallery: ["/assets/home3.png", "/assets/home4.png", "/assets/home5.png", "/assets/home1.png"]
-   },
-   {
-     id: 4,
-     name: "Гостиная",
-     image: "/assets/home4.png",
-     location: "Краснодар",
-     details: {
-       lead: "Гостиная для встреч и тихого вечера.",
-       story:
-         "Мягкая мебель, спокойный свет и композиция под ТВ-зону. Фокус на комфорте посадки и акустике.",
-       highlights: ["посадка", "свет", "ТВ-зона"],
-       result: "Пространство, где хочется остаться.",
-       duration: "28 дней",
-       budget: "по запросу",
-       materials: "ткань, дерево, металл",
-       challenges: "акустика открытой планировки",
-     },
-     gallery: ["/assets/home4.png", "/assets/home5.png", "/assets/home1.png", "/assets/home2.png"]
-   },
-   {
-     id: 5,
-     name: "Спальня",
-     image: "/assets/home5.png",
-     location: "Краснодар",
-     details: {
-       lead: "Спальня без визуального шума.",
-       story:
-         "Приглушённая палитра, мягкий текстиль и скрытое хранение. Свет настроен на вечерний сценарий.",
-       highlights: ["тихая палитра", "хранение", "вечерний свет"],
-       result: "Комната для восстановления, а не для демонстрации.",
-       duration: "24 дня",
-       budget: "по запросу",
-       materials: "текстиль, шпон, эмаль",
-       challenges: "мало естественного света",
-     },
-     gallery: ["/assets/home5.png", "/assets/home1.png", "/assets/home2.png", "/assets/home3.png"]
-   }
- ];
+export const Projects = () => {
+  const [filter, setFilter] = useState<ProjectCategory | "all">("all");
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
 
- const horecaProjects: Project[] = [
-   {
-     id: 1,
-     name: "Союзники кофе",
-     image: "/figma/preview-so.jpg",
-     location: "Тургенева 151, Краснодар",
-     details: {
-       lead: "Про уют без потери скорости обслуживания — пространство, которое работает в часы пик.",
-       story:
-         "Мы пересобрали планировку, отделили потоки гостей и бариста и сделали посадку «на разные сценарии»: быстрый кофе, работа, встреча. Интерьер держится на тёплой фактуре дерева, мягком свете и лёгкой мебели, чтобы зал не давил даже при высокой посадке.",
-       highlights: ["перепланировка логистики", "посадка на 3 сценария", "мягкий свет", "легкая мебель"],
-       result:
-         "Получили пространство, где комфортно находиться долго, а сервис остаётся быстрым. Оборачиваемость выросла, шум снизился, а интерьер считывается как цельный и живой.",
-       duration: "38 дней",
-       budget: "1.8 млн ₽",
-       materials: "шпон дуба, эмаль, металл, износостойкие ткани",
-       challenges: "перепад высот, скрытые коммуникации, дедлайн под открытие"
-     },
-     gallery: [
-       "/figma/so1.jpg",
-       "/figma/so2.jpg",
-       "/figma/so3.jpg",
-       "/figma/so4.jpg",
-       "/figma/so5.jpg",
-       "/figma/so6.jpg",
-       "/figma/so7.jpg"
-     ]
-   },
-   {
-     id: 2,
-     name: "Том Сойер",
-     image: "/figma/preview-tom.jpg",
-     location: "Тургенева 151, Краснодар",
-     details: {
-       lead: "Маленькая площадь, где каждый сантиметр обязан работать на бизнес.",
-       story:
-         "Мы проверили проходы и собрали компактные столы с мягкой посадкой, вынесли хранение в незаметные модули и убрали визуальный шум. Интерьер строится на аккуратных радиусах и спокойной графике — зал выглядит дороже и не устаёт визуально.",
-       highlights: ["компактная посадка", "тихая акустика", "скрытое хранение", "чистая геометрия"],
-       result:
-         "Больше посадочных мест без тесноты, быстрее обслуживание и ощущение «дорогого» пространства при небольшом метраже.",
-       duration: "29 дней",
-       budget: "1.2 млн ₽",
-       materials: "массив, фанера, металл, ламинированные панели",
-       challenges: "нестандартные радиусы мебели, узкие проходы, ночной монтаж"
-     },
-     gallery: [
-       "/figma/tom1.jpg",
-       "/figma/tom3.jpg",
-       "/figma/tom4.jpg",
-       "/figma/tom5.jpg",
-       "/figma/tom6.jpg",
-       "/figma/tom7.jpg",
-       "/figma/tom8.jpg"
-     ]
-   },
-   {
-     id: 3,
-     name: "Серф кофе",
-     image: "/figma/preview-surf.webp",
-     location: "Тургенева 151, Краснодар",
-     details: {
-      lead: "Про энергию и «картинку» — интерьер, который работает и днём, и вечером.",
-      story:
-        "Мы усилили акцент света, контраст фактур и чёткое зонирование: бар, быстрый кофе и зона для долгого сидения. Мебель держит визуальную лёгкость, но рассчитана на интенсивный поток.",
-      highlights: ["СВЕТОВЫЕ АКЦЕНТЫ", "ФОТОГЕНИЧНОСТЬ", "ЖЁСТКИЙ ТРАФИК", "ЗОНИРОВАНИЕ"],
-      result:
-        "Интерьер запоминается с первого взгляда, гости чаще делятся фото, а стиль бренда считывается мгновенно.",
-       duration: "45 дней",
-       budget: "2.4 млн ₽",
-       materials: "шпон, металл, HPL, каленое стекло",
-       challenges: "сложный свет, большой объём столярки, согласование материалов"
-     },
-     gallery: [
-       "/figma/surf2.png",
-       "/figma/surf-extra-1.webp",
-       "/figma/surf-extra-2.webp",
-       "/figma/surf-extra-3.webp",
-       "/figma/surf-extra-4.webp",
-       "/figma/surf-extra-5.webp",
-       "/figma/surf-extra-6.webp"
-     ]
-   },
-   {
-     id: 4,
-     name: "Лейбл кофе",
-     image: "/figma/preview-label.jpg",
-     location: "Тургенева 151, Краснодар",
-     details: {
-       lead: "Премиальная чистота без демонстративной роскоши.",
-       story:
-         "Акцент на геометрии, идеальных стыках и спокойных материалах. Мы добивались эффекта «тихой дороговизны» — без лишнего декора, но с точной работой по деталям и свету.",
-       highlights: ["идеальные стыки", "чистая геометрия", "спокойные фактуры", "точный свет"],
-       result:
-         "Интерьер выглядит дорого и аккуратно, а мебель сохраняет внешний вид даже при активной эксплуатации.",
-       duration: "32 дня",
-       budget: "1.6 млн ₽",
-       materials: "эмаль, МДФ, металл, натуральный шпон",
-       challenges: "чистовая отделка, точная подгонка фасадов, быстрый запуск"
-     },
-     gallery: [
-       "/figma/surf1.jpg",
-       "/figma/label1.jpg",
-       "/figma/label2.jpg",
-       "/figma/label3.jpg",
-       "/figma/label4.jpg",
-       "/figma/label5.jpg",
-       "/figma/label6.jpg",
-       "/figma/label7.jpg",
-       "/figma/label8.jpg",
-       "/figma/label9.jpg",
-       "/figma/label10.jpg"
-     ]
-   }
- ];
+  const visible = useMemo(
+    () => (filter === "all" ? allProjects : allProjects.filter((p) => p.category === filter)),
+    [filter]
+  );
 
- const lockBodyScroll = () => {
-  const html = document.documentElement;
-  const originalHtmlOverflow = html.style.overflow;
-   const scrollY = window.scrollY;
-   document.body.style.position = "fixed";
-   document.body.style.top = `-${scrollY}px`;
-   document.body.style.width = "100%";
-  document.body.style.overflow = "hidden";
-  html.style.overflow = "hidden";
-   document.body.classList.add("modal-open");
-   return () => {
-     const y = Math.abs(parseInt(document.body.style.top || "0", 10));
-     document.body.style.position = "";
-     document.body.style.top = "";
-     document.body.style.width = "";
-    document.body.style.overflow = "";
-    html.style.overflow = originalHtmlOverflow;
-     document.body.classList.remove("modal-open");
-     window.scrollTo(0, y);
-   };
- };
-
- export const Projects = () => {
-   const [isHoReCaOpen, setIsHoReCaOpen] = useState(false);
-   const [isInteriorOpen, setIsInteriorOpen] = useState(false);
-   const [isHomeOpen, setIsHomeOpen] = useState(false);
-   const [activeProject, setActiveProject] = useState<Project | null>(null);
-   const [openedFrom, setOpenedFrom] = useState<"horeca" | "interior" | "home" | null>(null);
-   const horecaScrollRef = useRef<HTMLDivElement>(null);
-   const interiorScrollRef = useRef<HTMLDivElement>(null);
-   const homeScrollRef = useRef<HTMLDivElement>(null);
-
-   useEffect(() => {
-     if (!isHoReCaOpen && !isInteriorOpen && !isHomeOpen) return;
-     return lockBodyScroll();
-   }, [isHoReCaOpen, isInteriorOpen, isHomeOpen]);
-
-   return (
-    <section id="projects" className="relative z-10 w-full py-16 md:py-24 overflow-hidden">
-       <div className="container-page">
-        <div className="mb-8 md:mb-12 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <SectionTitle eyebrow="Портфолио" title="Проекты" />
-          <p className="max-w-sm font-unbounded text-[13px] leading-relaxed text-black/45 md:text-right">
-            Листай горизонтально — кликай, чтобы открыть.
+  return (
+    <section id="projects" className="relative z-10 w-full py-16 md:py-24">
+      <div className="container-page">
+        <div className="mb-8 md:mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <SectionTitle eyebrow="Кейсы" title="Проекты" />
+          <p className="max-w-sm font-manrope text-[15px] leading-relaxed text-black/50 md:text-right">
+            Масштаб студии — в работах. Каждый кейс собран как отдельная история.
           </p>
         </div>
-       </div>
 
-        <HorizontalRail className="px-[20px] md:px-[48px] lg:px-[80px] pb-4">
-          {cards.map((card, index) => (
-            <button
-              key={card.id}
-              type="button"
-              onClick={() => {
-                if (card.id === "horeca") {
-                  setIsHoReCaOpen(true);
-                  return;
-                }
-                if (card.id === "interior") {
-                  setIsInteriorOpen(true);
-                  return;
-                }
-                setIsHomeOpen(true);
-              }}
-              className="group relative h-[58vh] min-h-[320px] max-h-[640px] w-[78vw] md:w-[42vw] lg:w-[34vw] shrink-0 snap-center overflow-hidden rounded-[24px] md:rounded-[32px] text-left"
-            >
-              <motion.div
-                layoutId={`category-cover-${card.id}`}
-                className="absolute inset-0"
-                transition={{ type: "spring", stiffness: 280, damping: 32 }}
+        <div className="mb-4 flex flex-wrap gap-2 md:gap-3">
+          {CATEGORIES.map((cat) => {
+            const active = filter === cat.id;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setFilter(cat.id)}
+                className={`h-10 rounded-full px-4 font-unbounded text-[12px] tracking-[0.04em] transition ${
+                  active
+                    ? "bg-black text-white"
+                    : "bg-black/5 text-black/55 hover:bg-black/10 hover:text-black"
+                }`}
               >
-                <Image
-                  src={card.image}
-                  alt={card.title}
-                  fill
-                  quality={88}
-                  sizes="(max-width: 768px) 78vw, 42vw"
-                  className="object-cover transition-transform duration-[1.1s] ease-out group-hover:scale-[1.04]"
-                  priority={index === 0}
-                />
-              </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/15 to-black/70" />
-              <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-                <p className="mb-2 font-unbounded text-[11px] tracking-[0.2em] uppercase text-white/55">
-                  0{index + 1} — категория
-                </p>
-                <p className="font-unbounded text-[28px] md:text-[40px] font-medium leading-none text-white">
-                  {card.title}
-                </p>
-              </div>
-            </button>
-          ))}
-          <div className="w-[8vw] shrink-0" aria-hidden />
-        </HorizontalRail>
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-       {isHomeOpen && typeof document !== "undefined" &&
-         createPortal(
-           <div
-             className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/90 backdrop-blur-sm px-4 md:px-6 py-6 md:py-10 overflow-hidden"
-             onClick={() => setIsHomeOpen(false)}
-           >
-            <div
-              className="relative w-full max-w-[1200px] max-h-[90vh] rounded-[24px] md:rounded-[32px] bg-white p-[20px] md:p-[40px] shadow-2xl overflow-x-hidden overflow-y-auto"
-              onClick={(event) => event.stopPropagation()}
-            >
-               <button
-                 type="button"
-                 aria-label="Закрыть"
-                 onClick={() => setIsHomeOpen(false)}
-                 className="absolute right-[20px] top-[16px] text-[28px] text-black/60 hover:text-black"
-               >
-                 ×
-               </button>
-               <h3 className="t-h2 text-black mb-4 md:mb-6">Проекты для дома</h3>
-               <div className="relative">
-                 <div ref={homeScrollRef} className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2">
-                 {homeProjects.map((project) => (
-                  <button
-                    key={project.id}
-                    type="button"
-                    onClick={() => {
-                      setIsHomeOpen(false);
-                      setOpenedFrom("home");
-                      setActiveProject(project);
-                    }}
-                    className="group relative h-[360px] md:h-[60vh] md:max-h-[720px] w-[78vw] md:w-[520px] shrink-0 snap-start overflow-hidden rounded-[20px] md:rounded-[28px] text-left"
-                  >
-                     <motion.div layoutId={`project-cover-home-${project.id}`} className="absolute inset-0">
-                       <Image src={project.image} alt={project.name} fill className="object-cover" />
-                     </motion.div>
-                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
-                     <div className="absolute bottom-[16px] left-[20px] text-white">
-                       <p className="t-h3 font-semibold">{project.name}</p>
-                       {project.location && <p className="t-body-sm text-white/80">{project.location}</p>}
-                     </div>
-                   </button>
-                 ))}
-               </div>
-               </div>
-             </div>
-           </div>,
-           document.body
-         )
-       }
+      <div className="container-page">
+        {visible.map((project, index) => (
+          <CaseRow
+            key={project.id}
+            project={project}
+            index={index}
+            onOpen={() => setActiveProject(project)}
+          />
+        ))}
+      </div>
 
-       {isHoReCaOpen && typeof document !== "undefined" &&
-         createPortal(
-           <div
-             className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/90 backdrop-blur-sm px-4 md:px-6 py-6 md:py-10 overflow-hidden"
-             onClick={() => setIsHoReCaOpen(false)}
-           >
-            <div
-              className="relative w-full max-w-[1200px] max-h-[90vh] rounded-[24px] md:rounded-[32px] bg-white p-[20px] md:p-[40px] shadow-2xl overflow-x-hidden overflow-y-auto"
-              onClick={(event) => event.stopPropagation()}
-            >
-               <button
-                 type="button"
-                 aria-label="Закрыть"
-                 onClick={() => setIsHoReCaOpen(false)}
-                 className="absolute right-[20px] top-[16px] text-[28px] text-black/60 hover:text-black"
-               >
-                 ×
-               </button>
-               <h3 className="t-h2 text-black mb-4 md:mb-6">Выберите проект HoReCa</h3>
-               <div className="relative">
-                 <button
-                   type="button"
-                   aria-label="Листать влево"
-                   onClick={() => horecaScrollRef.current?.scrollBy({ left: -400, behavior: "smooth" })}
-                   className="absolute left-2 top-1/2 z-10 -translate-y-1/2 hidden md:flex size-9 items-center justify-center rounded-full bg-white/95 text-black/80 shadow-md border border-black/10 hover:bg-white hover:text-black hover:shadow-lg transition-colors"
-                 >
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-                 </button>
-                 <button
-                   type="button"
-                   aria-label="Листать вправо"
-                   onClick={() => horecaScrollRef.current?.scrollBy({ left: 400, behavior: "smooth" })}
-                   className="absolute right-2 top-1/2 z-10 -translate-y-1/2 hidden md:flex size-9 items-center justify-center rounded-full bg-white/95 text-black/80 shadow-md border border-black/10 hover:bg-white hover:text-black hover:shadow-lg transition-colors"
-                 >
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                 </button>
-                 <div ref={horecaScrollRef} className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2">
-                 {horecaProjects.map((project) => (
-                  <button
-                    key={project.id}
-                    type="button"
-                    onClick={() => {
-                      setIsHoReCaOpen(false);
-                      setOpenedFrom("horeca");
-                      setActiveProject(project);
-                    }}
-                    className="group relative h-[360px] md:h-[60vh] md:max-h-[720px] w-[78vw] md:w-[520px] shrink-0 snap-start overflow-hidden rounded-[20px] md:rounded-[28px] text-left"
-                  >
-                     <motion.div layoutId={`project-cover-horeca-${project.id}`} className="absolute inset-0">
-                       <Image src={project.image} alt={project.name} fill className="object-cover" />
-                     </motion.div>
-                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
-                     <div className="absolute bottom-[16px] left-[20px] text-white">
-                       <p className="t-h3 font-semibold">{project.name}</p>
-                       {project.location && <p className="t-body-sm text-white/80">{project.location}</p>}
-                     </div>
-                   </button>
-                 ))}
-               </div>
-               </div>
-             </div>
-           </div>,
-           document.body
-         )
-       }
-
-       {isInteriorOpen && typeof document !== "undefined" &&
-         createPortal(
-           <div
-             className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/90 backdrop-blur-sm px-4 md:px-6 py-6 md:py-10 overflow-hidden"
-             onClick={() => setIsInteriorOpen(false)}
-           >
-             <div
-               className="relative w-full max-w-[1200px] max-h-[90vh] rounded-[24px] md:rounded-[32px] bg-white p-[20px] md:p-[40px] shadow-2xl overflow-x-hidden overflow-y-auto"
-               onClick={(e) => e.stopPropagation()}
-             >
-               <button
-                 type="button"
-                 aria-label="Закрыть"
-                 onClick={() => setIsInteriorOpen(false)}
-                 className="absolute right-[20px] top-[16px] text-[28px] text-black/60 hover:text-black"
-               >
-                 ×
-               </button>
-               <h3 className="t-h2 text-black mb-4 md:mb-6">Предметы интерьера</h3>
-               <InteriorItems
-                 scrollRef={interiorScrollRef}
-                 onSelect={(project) => {
-                   setIsInteriorOpen(false);
-                   setOpenedFrom("interior");
-                   setActiveProject(project);
-                 }}
-               />
-             </div>
-           </div>,
-           document.body
-         )
-       }
-
-       {activeProject && (
+      {activeProject && (
         <ProjectModal
           project={activeProject}
-          layoutId={`project-cover-${openedFrom}-${activeProject.id}`}
-          onClose={() => {
-            setActiveProject(null);
-            if (openedFrom === "horeca") setIsHoReCaOpen(true);
-            if (openedFrom === "interior") setIsInteriorOpen(true);
-            if (openedFrom === "home") setIsHomeOpen(true);
-            setOpenedFrom(null);
-          }}
+          layoutId={`project-cover-${activeProject.id}`}
+          related={relatedProjects(activeProject)}
+          onOpenRelated={(next) => setActiveProject(next)}
+          onClose={() => setActiveProject(null)}
         />
-       )}
-     </section>
-   );
- };
+      )}
+    </section>
+  );
+};
+
+function CaseRow({
+  project,
+  index,
+  onOpen,
+}: {
+  project: Project;
+  index: number;
+  onOpen: () => void;
+}) {
+  const theme = getProjectTheme(project);
+  const stats = project.stats ?? [];
+
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="group grid w-full grid-cols-1 items-center gap-8 border-t border-black/8 py-10 text-left last:border-b md:grid-cols-[0.92fr_1.18fr] md:gap-12 md:py-16"
+    >
+      <div>
+        {project.tags && project.tags.length > 0 && (
+          <p className="mb-6 font-unbounded text-[11px] uppercase tracking-[0.16em] text-black/40">
+            {project.tags.join("  ·  ")}
+          </p>
+        )}
+
+        {stats.length > 0 && (
+          <div className="mb-8 flex flex-wrap gap-8 md:gap-12">
+            {stats.map((stat) => (
+              <div key={`${stat.value}-${stat.label}`}>
+                <p className="font-unbounded text-[40px] font-medium leading-none tracking-[-0.04em] md:text-[52px]">
+                  {stat.value}
+                </p>
+                <p className="mt-2 max-w-[12ch] font-manrope text-[13px] leading-snug text-black/45">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <p className="mb-2 font-unbounded text-[12px] uppercase tracking-[0.18em] text-black/40">
+          {project.kind ?? "Проект"}
+        </p>
+        <h3 className="font-unbounded text-[28px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[40px]">
+          {project.name}
+        </h3>
+        <p className="mt-3 max-w-[36ch] font-manrope text-[15px] leading-relaxed text-black/60 md:text-[16px]">
+          {project.details?.lead ?? project.location}
+        </p>
+      </div>
+
+      <div
+        className="relative overflow-hidden rounded-[24px] p-2.5 md:rounded-[32px] md:p-3.5"
+        style={{ background: theme.panel }}
+      >
+        <motion.div
+          layoutId={`project-cover-${project.id}`}
+          className="relative aspect-[16/11] overflow-hidden rounded-[16px] md:rounded-[22px]"
+          transition={{ type: "spring", stiffness: 260, damping: 30 }}
+        >
+          <Image
+            src={project.image}
+            alt={project.name}
+            fill
+            sizes="(max-width: 768px) 100vw, 55vw"
+            priority={index < 2}
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          />
+        </motion.div>
+      </div>
+    </button>
+  );
+}

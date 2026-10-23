@@ -7,11 +7,23 @@ import { motion } from "framer-motion";
 import { pauseLenis, resumeLenis } from "@/components/SmoothScroll";
 import { getProjectTheme, type ProjectTheme } from "@/utils/projectThemes";
 
+export type ProjectCategory = "home" | "horeca" | "interior";
+
+export type ProjectStat = {
+  value: string;
+  label: string;
+};
+
 export type Project = {
-  id: number;
+  id: string | number;
   name: string;
   image: string;
   location?: string;
+  category?: ProjectCategory;
+  kind?: string;
+  year?: string;
+  tags?: string[];
+  stats?: ProjectStat[];
   gallery?: string[];
   theme?: Partial<ProjectTheme>;
   details?: {
@@ -30,15 +42,25 @@ type ProjectModalProps = {
   project: Project;
   onClose: () => void;
   layoutId?: string;
+  related?: Project[];
+  onOpenRelated?: (project: Project) => void;
 };
 
-export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) => {
+export const ProjectModal = ({
+  project,
+  onClose,
+  layoutId,
+  related = [],
+  onOpenRelated,
+}: ProjectModalProps) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const touchStartX = useRef<number>(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const SWIPE_THRESHOLD = 50;
   const theme = getProjectTheme(project);
   const gallery = project.gallery?.length ? project.gallery : [project.image];
+  const highlights = project.details?.highlights ?? [];
+  const stats = project.stats ?? [];
 
   useEffect(() => {
     const html = document.documentElement;
@@ -51,8 +73,6 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
     document.body.style.overflow = "hidden";
     html.style.overflow = "hidden";
     document.body.classList.add("modal-open");
-
-    // Focus scroll root so wheel/trackpad hits this layer
     scrollRef.current?.focus({ preventScroll: true });
 
     return () => {
@@ -67,6 +87,11 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
       window.scrollTo(0, y);
     };
   }, []);
+
+  useEffect(() => {
+    setActiveIndex(null);
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [project.id]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -91,40 +116,32 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
 
   if (typeof document === "undefined") return null;
 
-  const metrics = [
-    { label: "Срок", value: project.details?.duration ?? "по запросу" },
-    { label: "Бюджет", value: project.details?.budget ?? "по запросу" },
-    { label: "Материалы", value: project.details?.materials ?? "по запросу" },
-    { label: "Сложности", value: project.details?.challenges ?? "по запросу" },
-  ];
-
   return createPortal(
     <motion.div
       ref={scrollRef}
       tabIndex={-1}
       data-lenis-prevent
-      className="fixed inset-0 z-[1000] overflow-y-auto overscroll-contain bg-[#0a0a0a] outline-none"
+      className="fixed inset-0 z-[1000] overflow-y-auto overscroll-contain bg-[var(--background)] outline-none"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.25 }}
+      transition={{ duration: 0.28 }}
     >
-      {/* Sticky close */}
       <button
         type="button"
         aria-label="Закрыть"
         onClick={onClose}
-        className="fixed right-4 top-4 z-[1020] flex size-11 items-center justify-center rounded-full border border-white/15 bg-black/50 font-unbounded text-[22px] leading-none text-white backdrop-blur-md transition hover:bg-black/70 md:right-6 md:top-6"
+        className="fixed right-4 top-4 z-[1020] flex size-11 items-center justify-center rounded-full border border-white/20 bg-black/40 font-unbounded text-[22px] leading-none text-white backdrop-blur-md transition hover:bg-black/65 md:right-6 md:top-6"
       >
         ×
       </button>
 
-      <article className="relative min-h-full bg-[var(--background)] text-[var(--ink)]">
-        {/* Full-bleed hero */}
-        <header className="relative h-[52svh] min-h-[280px] max-h-[620px] w-full overflow-hidden bg-black md:h-[62svh]">
+      <article>
+        <header className="relative min-h-[72svh] overflow-hidden bg-[var(--background)] text-white md:min-h-[78svh]">
           <motion.div
-            className="absolute inset-0"
+            className="absolute inset-0 origin-bottom"
             layoutId={layoutId ?? `project-cover-${project.id}`}
-            transition={{ type: "spring", stiffness: 260, damping: 30 }}
+            transition={{ type: "spring", stiffness: 240, damping: 32 }}
+            style={{ clipPath: "polygon(0 0, 100% 0, 100% 78%, 0 100%)" }}
           >
             <Image
               src={project.image}
@@ -134,126 +151,179 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
               sizes="100vw"
               className="object-cover"
             />
+            <div className="absolute inset-0 bg-black/35" />
+            <div className="absolute inset-0" style={{ background: theme.heroOverlay }} />
           </motion.div>
-          <div
-            className="absolute inset-0"
-            style={{ background: theme.heroOverlay }}
-            aria-hidden
-          />
-          <div
-            className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--background)] to-transparent"
-            aria-hidden
-          />
-          <div className="absolute inset-x-0 bottom-0 z-10 px-5 pb-8 md:px-12 md:pb-12 lg:px-20">
-            <p
-              className="mb-3 font-unbounded text-[11px] uppercase tracking-[0.22em]"
-              style={{ color: theme.accent }}
-            >
-              {theme.label}
-            </p>
-            <h2 className="max-w-[16ch] font-unbounded text-[36px] font-medium leading-[1.02] text-white md:text-[56px] lg:text-[64px]">
+
+          <div className="relative z-10 flex min-h-[72svh] flex-col justify-end px-5 pb-[18%] pt-24 md:min-h-[78svh] md:px-12 md:pb-[14%] lg:px-20">
+            <p className="mb-5 font-unbounded text-[12px] uppercase tracking-[0.28em] text-white/70">
               {project.name}
+            </p>
+            <h2 className="max-w-[18ch] font-unbounded text-[32px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[52px] lg:text-[60px]">
+              {project.details?.lead ?? project.name}
             </h2>
-            {project.location && (
-              <p className="mt-3 font-manrope text-[14px] text-white/65 md:text-[16px]">
-                {project.location}
-              </p>
-            )}
           </div>
         </header>
 
-        {/* Lead */}
-        <div className="px-5 pt-2 md:px-12 lg:px-20">
-          <p className="max-w-[28ch] font-unbounded text-[22px] leading-[1.3] tracking-[-0.02em] md:max-w-[34ch] md:text-[32px]">
-            {project.details?.lead ?? "Короткое описание проекта по запросу."}
-          </p>
-        </div>
-
-        {/* Gallery */}
-        <div className="mt-8 md:mt-12">
-          <div className="flex gap-3 overflow-x-auto px-5 pb-2 scrollbar-hide snap-x snap-mandatory md:gap-5 md:px-12 lg:px-20">
-            {gallery.map((src, index) => (
-              <button
-                key={`${project.id}-${index}`}
-                type="button"
-                onClick={() => setActiveIndex(index)}
-                className="group relative h-[240px] w-[68vw] max-w-[340px] shrink-0 snap-start overflow-hidden rounded-[4px] text-left md:h-[420px] md:max-w-[480px]"
-                aria-label={`Фото ${index + 1}`}
-              >
-                <Image
-                  src={src}
-                  alt={`${project.name} — ${index + 1}`}
-                  fill
-                  sizes="480px"
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                />
-              </button>
-            ))}
+        <div className="grid grid-cols-1 gap-8 px-5 py-10 md:grid-cols-2 md:gap-16 md:px-12 md:py-16 lg:px-20">
+          <div>
+            <p className="font-unbounded text-[40px] font-medium leading-none tracking-[-0.04em] md:text-[56px]">
+              {project.year ?? "—"}
+            </p>
+            {project.tags && project.tags.length > 0 && (
+              <p className="mt-6 max-w-[28ch] font-unbounded text-[12px] uppercase tracking-[0.14em] text-black/40">
+                {project.tags.join("  ·  ")}
+              </p>
+            )}
+          </div>
+          <div>
+            <p className="font-unbounded text-[32px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[48px]">
+              {project.name}
+            </p>
+            {project.location && (
+              <p className="mt-3 font-manrope text-[15px] text-black/45">{project.location}</p>
+            )}
+            <p className="mt-6 max-w-[46ch] font-manrope text-[16px] leading-[1.7] text-black/70 md:text-[18px]">
+              {project.details?.story ?? "Подробности проекта — по запросу."}
+            </p>
           </div>
         </div>
 
-        {/* Story + metrics */}
-        <div className="grid grid-cols-1 gap-10 px-5 py-12 md:grid-cols-[1.35fr_0.75fr] md:gap-16 md:px-12 md:py-16 lg:px-20">
-          <div className="space-y-8">
-            <p className="max-w-[58ch] font-manrope text-[16px] leading-[1.65] text-black/75 md:text-[18px]">
-              {project.details?.story ?? "Подробности и контекст — по запросу."}
+        {highlights.length > 0 && (
+          <div className="px-5 py-4 md:px-12 lg:px-20">
+            <p className="mb-8 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
+              Цели и задачи
             </p>
-
-            {(project.details?.highlights?.length ?? 0) > 0 && (
-              <ul className="flex flex-wrap gap-x-5 gap-y-2">
-                {project.details!.highlights.map((item) => (
-                  <li
-                    key={item}
-                    className="font-unbounded text-[11px] uppercase tracking-[0.14em] text-black/45"
-                  >
-                    <span className="mr-2" style={{ color: theme.accent }}>
-                      —
-                    </span>
+            <ol className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-16 md:gap-y-10">
+              {highlights.map((item, i) => (
+                <li key={item} className="flex gap-5">
+                  <span className="font-unbounded text-[13px] text-black/30">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-unbounded text-[18px] leading-snug tracking-[-0.02em] md:text-[22px]">
                     {item}
-                  </li>
-                ))}
-              </ul>
-            )}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
 
-            <div className="border-t border-black/10 pt-6">
-              <p className="mb-2 font-unbounded text-[11px] uppercase tracking-[0.18em] text-black/40">
-                Результат
+        <div className="mt-10 px-5 md:mt-16 md:px-12 lg:px-20">
+          <button
+            type="button"
+            onClick={() => setActiveIndex(0)}
+            className="relative aspect-[16/9] w-full overflow-hidden"
+            aria-label="Фото 1"
+          >
+            <Image src={gallery[0]} alt={project.name} fill sizes="100vw" className="object-cover" />
+          </button>
+          {gallery.length > 1 && (
+            <div className="mt-3 grid grid-cols-1 gap-3 md:mt-4 md:grid-cols-2 md:gap-4">
+              {gallery.slice(1).map((src, index) => (
+                <button
+                  key={`${project.id}-${src}-${index + 1}`}
+                  type="button"
+                  onClick={() => setActiveIndex(index + 1)}
+                  className="relative aspect-[4/3] w-full overflow-hidden"
+                  aria-label={`Фото ${index + 2}`}
+                >
+                  <Image
+                    src={src}
+                    alt={`${project.name} — ${index + 2}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-8 px-5 py-12 md:grid-cols-4 md:gap-10 md:px-12 md:py-20 lg:px-20">
+          {stats.map((stat) => (
+            <div key={`${stat.value}-${stat.label}`}>
+              <p className="font-unbounded text-[40px] font-medium leading-none tracking-[-0.04em] md:text-[52px]">
+                {stat.value}
               </p>
-              <p className="max-w-[52ch] font-manrope text-[16px] leading-relaxed text-black/80 md:text-[17px]">
-                {project.details?.result ?? "Результат и эффект — по запросу."}
+              <p className="mt-2 max-w-[14ch] font-manrope text-[13px] leading-snug text-black/45">
+                {stat.label}
               </p>
             </div>
-          </div>
-
-          <dl className="h-fit border-t border-black/10">
-            {metrics.map((m) => (
-              <div
-                key={m.label}
-                className="grid grid-cols-[100px_1fr] gap-4 border-b border-black/10 py-4 md:grid-cols-[120px_1fr]"
-              >
-                <dt className="font-unbounded text-[11px] uppercase tracking-[0.16em] text-black/40">
-                  {m.label}
-                </dt>
-                <dd className="font-manrope text-[15px] text-black/85 md:text-[16px]">{m.value}</dd>
-              </div>
-            ))}
-          </dl>
+          ))}
+          {project.details?.materials && (
+            <div>
+              <p className="font-unbounded text-[13px] uppercase tracking-[0.16em] text-black/35">
+                Материалы
+              </p>
+              <p className="mt-2 font-manrope text-[15px] leading-relaxed text-black/75">
+                {project.details.materials}
+              </p>
+            </div>
+          )}
         </div>
+
+        <div className="px-5 pb-8 md:px-12 lg:px-20">
+          <div className="border-t border-black/10 pt-10 md:pt-14">
+            <p className="mb-3 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
+              Результат
+            </p>
+            <p className="max-w-[46ch] font-unbounded text-[22px] leading-[1.3] tracking-[-0.02em] md:text-[28px]">
+              {project.details?.result ?? "Результат — по запросу."}
+            </p>
+          </div>
+        </div>
+
+        {related.length > 0 && (
+          <div className="mt-8 border-t border-black/8 px-5 py-12 md:px-12 md:py-16 lg:px-20">
+            <p className="mb-8 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
+              Ещё кейсы
+            </p>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
+              {related.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => onOpenRelated?.(item)}
+                  className="group text-left"
+                >
+                  <div className="relative mb-4 aspect-[16/10] overflow-hidden rounded-[20px]">
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    />
+                  </div>
+                  <p className="font-unbounded text-[12px] uppercase tracking-[0.16em] text-black/40">
+                    {item.kind ?? "Проект"}
+                  </p>
+                  <p className="mt-1 font-unbounded text-[22px] tracking-[-0.03em]">{item.name}</p>
+                  <p className="mt-1 font-manrope text-[14px] text-black/50">
+                    {item.details?.lead}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="px-5 pb-16 md:px-12 md:pb-24 lg:px-20">
           <button
             type="button"
             onClick={onClose}
-            className="font-unbounded text-[13px] uppercase tracking-[0.18em] text-black/45 transition hover:text-black"
+            className="font-unbounded text-[13px] uppercase tracking-[0.18em] text-black/40 transition hover:text-black"
           >
-            ← Назад к проектам
+            ← Все кейсы
           </button>
         </div>
       </article>
 
       {activeIndex !== null && (
         <div
-          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/85 backdrop-blur-[2px]"
+          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/88"
           onClick={() => setActiveIndex(null)}
         >
           <div
@@ -264,7 +334,7 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
               type="button"
               aria-label="Закрыть фото"
               onClick={() => setActiveIndex(null)}
-              className="absolute -right-3 -top-3 z-10 flex size-9 items-center justify-center rounded-full bg-white text-black shadow-lg"
+              className="absolute -right-3 -top-3 z-10 flex size-9 items-center justify-center rounded-full bg-white text-black"
             >
               ×
             </button>
@@ -276,7 +346,7 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
                   prev === null ? 0 : (prev - 1 + gallery.length) % gallery.length
                 )
               }
-              className="absolute left-3 top-1/2 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-black shadow md:flex"
+              className="absolute left-3 top-1/2 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-black md:flex"
             >
               ‹
             </button>
@@ -286,7 +356,7 @@ export const ProjectModal = ({ project, onClose, layoutId }: ProjectModalProps) 
               onClick={() =>
                 setActiveIndex((prev) => (prev === null ? 0 : (prev + 1) % gallery.length))
               }
-              className="absolute right-3 top-1/2 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-black shadow md:flex"
+              className="absolute right-3 top-1/2 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-black md:flex"
             >
               ›
             </button>
