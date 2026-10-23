@@ -29,8 +29,11 @@ export type Project = {
   theme?: Partial<ProjectTheme>;
   details?: {
     lead: string;
+    brief?: string;
     story: string;
-    highlights: string[];
+    goals?: { title: string; text: string }[];
+    process?: string;
+    highlights?: string[];
     materials: string;
     duration: string;
     budget: string;
@@ -38,6 +41,14 @@ export type Project = {
     result: string;
   };
 };
+
+function splitCopy(value?: string) {
+  if (!value) return [];
+  return value
+    .split(/\n\n+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
 
 type ProjectModalProps = {
   project: Project;
@@ -60,8 +71,14 @@ export const ProjectModal = ({
   const SWIPE_THRESHOLD = 50;
   const theme = getProjectTheme(project);
   const gallery = project.gallery?.length ? project.gallery : [project.image];
-  const highlights = project.details?.highlights ?? [];
+  const goals =
+    project.details?.goals ??
+    (project.details?.highlights ?? []).map((title) => ({ title, text: "" }));
   const stats = project.stats ?? [];
+  const storyParts = splitCopy(project.details?.story);
+  const processParts = splitCopy(project.details?.process);
+  const challengeParts = splitCopy(project.details?.challenges);
+  const resultParts = splitCopy(project.details?.result);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -185,25 +202,50 @@ export const ProjectModal = ({
             {project.location && (
               <p className="mt-3 font-manrope text-[15px] text-black/45">{project.location}</p>
             )}
-            <p className="mt-6 max-w-[46ch] font-manrope text-[16px] leading-[1.7] text-black/70 md:text-[18px]">
-              {project.details?.story ?? "Подробности проекта — по запросу."}
-            </p>
+            {project.details?.brief && (
+              <p className="mt-6 max-w-[46ch] font-unbounded text-[18px] leading-[1.4] tracking-[-0.02em] md:text-[20px]">
+                {project.details.brief}
+              </p>
+            )}
+            <div className="mt-6 max-w-[46ch] space-y-4">
+              {storyParts.length > 0 ? (
+                storyParts.map((part) => (
+                  <p
+                    key={part.slice(0, 24)}
+                    className="font-manrope text-[16px] leading-[1.7] text-black/70 md:text-[17px]"
+                  >
+                    {part}
+                  </p>
+                ))
+              ) : (
+                <p className="font-manrope text-[16px] leading-[1.7] text-black/70 md:text-[17px]">
+                  Подробности проекта — по запросу.
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
-        {highlights.length > 0 && (
+        {goals.length > 0 && (
           <div className="px-5 py-4 md:px-12 lg:px-20">
             <p className="mb-8 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
               Цели и задачи
             </p>
-            <ol className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-16 md:gap-y-10">
-              {highlights.map((item, i) => (
-                <li key={item} className="flex gap-5">
+            <ol className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-x-16 md:gap-y-12">
+              {goals.map((item, i) => (
+                <li key={item.title} className="flex gap-5">
                   <span className="font-unbounded text-[13px] text-black/30">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="font-unbounded text-[18px] leading-snug tracking-[-0.02em] md:text-[22px]">
-                    {item}
+                  <span>
+                    <span className="block font-unbounded text-[18px] leading-snug tracking-[-0.02em] md:text-[22px]">
+                      {item.title}
+                    </span>
+                    {item.text ? (
+                      <span className="mt-2 block font-manrope text-[15px] leading-relaxed text-black/60 md:text-[16px]">
+                        {item.text}
+                      </span>
+                    ) : null}
                   </span>
                 </li>
               ))}
@@ -226,8 +268,29 @@ export const ProjectModal = ({
               quality={70}
             />
           </button>
-          {gallery.length > 1 && (
-            <div className="mt-3 grid grid-cols-1 gap-3 md:mt-4 md:grid-cols-2 md:gap-4">
+        </div>
+
+        {processParts.length > 0 && (
+          <div className="px-5 py-12 md:px-12 md:py-16 lg:px-20">
+            <p className="mb-6 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
+              Решение
+            </p>
+            <div className="max-w-[62ch] space-y-4">
+              {processParts.map((part) => (
+                <p
+                  key={part.slice(0, 24)}
+                  className="font-manrope text-[16px] leading-[1.7] text-black/70 md:text-[18px]"
+                >
+                  {part}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {gallery.length > 1 && (
+          <div className="px-5 md:px-12 lg:px-20">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
               {gallery.slice(1).map((src, index) => (
                 <button
                   key={`${project.id}-${src}-${index + 1}`}
@@ -245,8 +308,8 @@ export const ProjectModal = ({
                 </button>
               ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-8 px-5 py-12 md:grid-cols-4 md:gap-10 md:px-12 md:py-20 lg:px-20">
           {stats.map((stat) => (
@@ -271,14 +334,51 @@ export const ProjectModal = ({
           )}
         </div>
 
+        {challengeParts.length > 0 && challengeParts[0] !== "—" && (
+          <div className="px-5 pb-4 md:px-12 lg:px-20">
+            <div className="border-t border-black/10 py-10 md:py-14">
+              <p className="mb-4 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
+                Сложности
+              </p>
+              <div className="max-w-[62ch] space-y-4">
+                {challengeParts.map((part) => (
+                  <p
+                    key={part.slice(0, 24)}
+                    className="font-manrope text-[16px] leading-[1.7] text-black/70 md:text-[17px]"
+                  >
+                    {part}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="px-5 pb-8 md:px-12 lg:px-20">
           <div className="border-t border-black/10 pt-10 md:pt-14">
-            <p className="mb-3 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
+            <p className="mb-4 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
               Результат
             </p>
-            <p className="max-w-[46ch] font-unbounded text-[22px] leading-[1.3] tracking-[-0.02em] md:text-[28px]">
-              {project.details?.result ?? "Результат — по запросу."}
-            </p>
+            <div className="max-w-[46ch] space-y-4">
+              {resultParts.length > 0 ? (
+                resultParts.map((part, index) => (
+                  <p
+                    key={part.slice(0, 24)}
+                    className={
+                      index === 0
+                        ? "font-unbounded text-[22px] leading-[1.3] tracking-[-0.02em] md:text-[28px]"
+                        : "font-manrope text-[16px] leading-[1.7] text-black/65 md:text-[17px]"
+                    }
+                  >
+                    {part}
+                  </p>
+                ))
+              ) : (
+                <p className="font-unbounded text-[22px] leading-[1.3] md:text-[28px]">
+                  Результат — по запросу.
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
