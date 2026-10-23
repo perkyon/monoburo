@@ -1,21 +1,26 @@
 "use client";
 
-import Image from "next/image";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ProjectModal, type Project, type ProjectCategory } from "@/components/ProjectModal";
 import { SectionTitle } from "@/components/SectionTitle";
-import { allProjects, CATEGORIES, relatedProjects } from "@/data/projects";
+import { LazyFrame } from "@/components/LazyFrame";
+import {
+  CATEGORIES,
+  PREVIEW_COUNT,
+  projectsForFilter,
+  relatedProjects,
+} from "@/data/projects";
 import { getProjectTheme } from "@/utils/projectThemes";
 
 export const Projects = () => {
   const [filter, setFilter] = useState<ProjectCategory | "all">("all");
+  const [expanded, setExpanded] = useState(false);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
 
-  const visible = useMemo(
-    () => (filter === "all" ? allProjects : allProjects.filter((p) => p.category === filter)),
-    [filter]
-  );
+  const ordered = useMemo(() => projectsForFilter(filter), [filter]);
+  const visible = expanded ? ordered : ordered.slice(0, PREVIEW_COUNT);
+  const hiddenCount = Math.max(0, ordered.length - PREVIEW_COUNT);
 
   return (
     <section id="projects" className="relative z-10 w-full py-16 md:py-24">
@@ -34,7 +39,10 @@ export const Projects = () => {
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => setFilter(cat.id)}
+                onClick={() => {
+                  setFilter(cat.id);
+                  setExpanded(false);
+                }}
                 className={`h-10 rounded-full px-4 font-unbounded text-[12px] tracking-[0.04em] transition ${
                   active
                     ? "bg-black text-white"
@@ -57,6 +65,18 @@ export const Projects = () => {
             onOpen={() => setActiveProject(project)}
           />
         ))}
+
+        {hiddenCount > 0 && (
+          <div className="border-t border-black/8 py-8 md:py-10">
+            <button
+              type="button"
+              onClick={() => setExpanded((value) => !value)}
+              className="flex h-12 items-center rounded-full border border-black/12 px-6 font-unbounded text-[12px] uppercase tracking-[0.16em] text-black/70 transition hover:border-black hover:text-black"
+            >
+              {expanded ? "Свернуть" : `Раскрыть все проекты · ещё ${hiddenCount}`}
+            </button>
+          </div>
+        )}
       </div>
 
       {activeProject && (
@@ -132,12 +152,12 @@ function CaseRow({
           className="relative aspect-[16/11] overflow-hidden rounded-[16px] md:rounded-[22px]"
           transition={{ type: "spring", stiffness: 260, damping: 30 }}
         >
-          <Image
+          <LazyFrame
             src={project.image}
             alt={project.name}
-            fill
             sizes="(max-width: 768px) 100vw, 55vw"
-            priority={index < 2}
+            priority={index < 3}
+            quality={70}
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
         </motion.div>

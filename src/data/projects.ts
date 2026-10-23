@@ -7,6 +7,22 @@ export const CATEGORIES: { id: ProjectCategory | "all"; label: string }[] = [
   { id: "interior", label: "Предметы" },
 ];
 
+export const FEATURED_IDS = ["surf", "label", "tom-sawyer"] as const;
+export const PREVIEW_COUNT = 3;
+
+export function projectsForFilter(filter: ProjectCategory | "all"): Project[] {
+  const pool =
+    filter === "all" ? allProjects : allProjects.filter((project) => project.category === filter);
+
+  const featured = FEATURED_IDS.map((id) => pool.find((project) => project.id === id)).filter(
+    (project): project is Project => Boolean(project)
+  );
+  const rest = pool.filter(
+    (project) => !FEATURED_IDS.includes(project.id as (typeof FEATURED_IDS)[number])
+  );
+  return [...featured, ...rest];
+}
+
 export const allProjects: Project[] = [
   {
     id: "surf",

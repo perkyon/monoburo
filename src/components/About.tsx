@@ -1,117 +1,144 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
-import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
-import { SectionTitle } from "@/components/SectionTitle";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const chapters = [
+  {
+    id: "craft",
+    index: "01",
+    title: "Пользоваться каждый день",
+    text: "Мы не делаем мебель ради мебели. Задача — чтобы пространством было удобно жить и работать, а не только снимать его.",
+    image: "/assets/about_img.png",
+    caption: "Мастерская · Краснодар",
+  },
+  {
+    id: "range",
+    index: "02",
+    title: "Дом, офис, HoReCa",
+    text: "Корпусная и отдельно стоящая мебель, кофейни, офисы, жилые интерьеры. Один язык — разные сценарии.",
+    image: "/figma/preview-surf.webp",
+    caption: "HoReCa · Серф кофе",
+  },
+  {
+    id: "finish",
+    index: "03",
+    title: "Довести до результата",
+    text: "Нестандартные планировки, ограниченный бюджет, ошибки ремонта, жёсткий дедлайн. Берём ответственность и собираем так, чтобы работало.",
+    image: "/assets/home1.png",
+    caption: "Дом · жилые пространства",
+  },
+] as const;
+
+const ticker = [
+  "корпусная мебель",
+  "отдельно стоящая",
+  "офисы",
+  "кофейни",
+  "HoReCa",
+  "предметы интерьера",
+];
 
 export const About = () => {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-  const [progress, setProgress] = useState(0);
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1.08, 1]);
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "-6%"]);
-
-  useMotionValueEvent(scrollYProgress, "change", (value) => {
-    setProgress(value);
-  });
-
-  const paragraphs = useMemo(
-    () => [
-      "Мы не делаем мебель ради мебели.",
-      "Мы решаем задачи так, чтобы этим было удобно пользоваться каждый день.",
-      "Мы работаем с корпусной и отдельно стоящей мебелью, а также делаем решения для бизнеса — офисов, кофеен и HoReCa.",
-      "Опыт для нас — не количество лет. Это умение брать ответственность и доводить решение до результата.",
-      "Мы сталкивались с нестандартными планировками, ограниченными бюджетами, ошибками ремонта и жёсткими дедлайнами — и умеем собирать решения так, чтобы они работали, а не просто выглядели красиво.",
-    ],
-    []
-  );
-
-  const wordMatrix = useMemo(() => paragraphs.map((text) => text.split(" ")), [paragraphs]);
-  const totalWords = useMemo(
-    () => wordMatrix.reduce((sum, words) => sum + words.length, 0),
-    [wordMatrix]
-  );
-  let wordIndex = 0;
+  const [active, setActive] = useState(0);
+  const chapter = chapters[active];
 
   return (
-    <section
-      id="about"
-      ref={sectionRef}
-      className="relative w-full"
-      style={{ height: "220vh" }}
-    >
-      <div className="sticky top-0 flex h-[100svh] items-stretch overflow-hidden">
-        <div className="container-page flex h-full w-full items-center py-10 md:py-0">
-          <div className="grid h-full max-h-[860px] w-full overflow-hidden rounded-[24px] md:rounded-[36px] bg-surface md:grid-cols-2 shadow-[0_30px_90px_rgba(0,0,0,0.08)]">
-            <div className="relative hidden min-h-full overflow-hidden md:block">
-              <motion.div className="absolute inset-0" style={{ scale: imageScale, y: imageY }}>
-                <Image
-                  src="/assets/about_img.png"
-                  alt="О мастерской Monoburo"
-                  fill
-                  sizes="50vw"
-                  className="object-cover"
-                  priority={false}
-                />
-              </motion.div>
-              <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
-            </div>
+    <section id="about" className="relative w-full py-16 md:py-24 overflow-hidden">
+      <div className="container-page">
+        <p className="font-unbounded text-[11px] md:text-[12px] tracking-[0.22em] uppercase text-black/45">
+          Мастерская
+        </p>
+        <h2 className="mt-2 max-w-[16ch] font-unbounded text-[32px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[52px] lg:text-[60px]">
+          Мы не делаем мебель ради мебели.
+        </h2>
+      </div>
 
-            <div className="relative flex flex-col justify-center px-6 py-10 md:px-12 lg:px-16">
-              <div className="mb-6 h-[2px] w-full overflow-hidden rounded-full bg-black/10">
-                <motion.div
-                  className="h-full origin-left bg-black"
-                  style={{ scaleX: scrollYProgress }}
-                />
-              </div>
+      <div className="container-page mt-8 md:mt-12 grid grid-cols-1 items-stretch gap-8 md:grid-cols-[1.15fr_0.85fr] md:gap-14">
+        <div className="relative min-h-[380px] overflow-hidden rounded-[24px] md:min-h-[640px] md:rounded-[32px]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={chapter.id}
+              className="absolute inset-0"
+              initial={{ opacity: 0, scale: 1.04 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Image
+                src={chapter.image}
+                alt={chapter.caption}
+                fill
+                sizes="(max-width: 768px) 100vw, 58vw"
+                quality={72}
+                className="object-cover"
+                priority={active === 0}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+              <p className="absolute bottom-5 left-5 font-unbounded text-[11px] uppercase tracking-[0.18em] text-white/80 md:bottom-7 md:left-7">
+                {chapter.caption}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-              <SectionTitle eyebrow="Мастерская" title="О нас" />
+        <div className="flex flex-col justify-center">
+          <p className="mb-8 max-w-[36ch] font-manrope text-[16px] leading-relaxed text-black/55 md:text-[17px]">
+            Мы решаем задачу так, чтобы этим было удобно пользоваться каждый день — и чтобы это выглядело собранно.
+          </p>
 
-              <div className="relative mt-6 min-h-[200px] overflow-hidden rounded-[20px] md:hidden">
-                <Image
-                  src="/assets/about_img.png"
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="100vw"
-                />
-              </div>
-
-              <div className="mt-8 md:mt-10 flex flex-col gap-4 max-w-[34rem]">
-                {wordMatrix.map((words, paragraphIndex) => (
-                  <p
-                    key={paragraphIndex}
-                    className="font-unbounded font-normal text-[17px] md:text-[22px] leading-[1.45] text-black"
+          <div className="border-t border-black/10">
+            {chapters.map((item, index) => {
+              const isActive = index === active;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onMouseEnter={() => setActive(index)}
+                  onFocus={() => setActive(index)}
+                  onClick={() => setActive(index)}
+                  className="group flex w-full gap-5 border-b border-black/10 py-5 text-left md:gap-6 md:py-6"
+                >
+                  <span
+                    className={`font-unbounded text-[13px] transition ${
+                      isActive ? "text-black" : "text-black/30"
+                    }`}
                   >
-                    {words.map((word, idx) => {
-                      const currentIndex = wordIndex;
-                      wordIndex += 1;
-                      const reveal = Math.min(
-                        Math.max(progress * totalWords * 0.92 - currentIndex, 0),
-                        1
-                      );
-                      return (
-                        <span
-                          key={`${paragraphIndex}-${idx}`}
-                          className="mr-[6px] inline-block will-change-transform"
-                          style={{
-                            opacity: 0.14 + reveal * 0.86,
-                            transform: `translateY(${(1 - reveal) * 8}px)`,
-                          }}
-                        >
-                          {word}
-                        </span>
-                      );
-                    })}
-                  </p>
-                ))}
-              </div>
-            </div>
+                    {item.index}
+                  </span>
+                  <span>
+                    <span
+                      className={`block font-unbounded text-[18px] leading-snug tracking-[-0.02em] transition md:text-[22px] ${
+                        isActive ? "text-black" : "text-black/40"
+                      }`}
+                    >
+                      {item.title}
+                    </span>
+                    {isActive ? (
+                      <span className="mt-2 block max-w-[34ch] font-manrope text-[14px] leading-relaxed text-black/60 md:text-[15px]">
+                        {item.text}
+                      </span>
+                    ) : null}
+                  </span>
+                </button>
+              );
+            })}
           </div>
+        </div>
+      </div>
+
+      <div className="mt-12 md:mt-16 overflow-hidden border-y border-black/8 py-4">
+        <div className="flex animate-marquee whitespace-nowrap">
+          {ticker.concat(ticker).map((item, index) => (
+            <span
+              key={`${item}-${index}`}
+              className="mx-6 font-unbounded text-[12px] uppercase tracking-[0.22em] text-black/35 md:mx-10 md:text-[13px]"
+            >
+              {item}
+              <span className="ml-6 md:ml-10">·</span>
+            </span>
+          ))}
         </div>
       </div>
     </section>

@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { pauseLenis, resumeLenis } from "@/components/SmoothScroll";
+import { LazyFrame } from "@/components/LazyFrame";
 import { getProjectTheme, type ProjectTheme } from "@/utils/projectThemes";
 
 export type ProjectCategory = "home" | "horeca" | "interior";
@@ -148,6 +149,7 @@ export const ProjectModal = ({
               alt={project.name}
               fill
               priority
+              quality={72}
               sizes="100vw"
               className="object-cover"
             />
@@ -216,7 +218,13 @@ export const ProjectModal = ({
             className="relative aspect-[16/9] w-full overflow-hidden"
             aria-label="Фото 1"
           >
-            <Image src={gallery[0]} alt={project.name} fill sizes="100vw" className="object-cover" />
+            <LazyFrame
+              src={gallery[0]}
+              alt={project.name}
+              sizes="100vw"
+              priority
+              quality={70}
+            />
           </button>
           {gallery.length > 1 && (
             <div className="mt-3 grid grid-cols-1 gap-3 md:mt-4 md:grid-cols-2 md:gap-4">
@@ -228,12 +236,11 @@ export const ProjectModal = ({
                   className="relative aspect-[4/3] w-full overflow-hidden"
                   aria-label={`Фото ${index + 2}`}
                 >
-                  <Image
+                  <LazyFrame
                     src={src}
                     alt={`${project.name} — ${index + 2}`}
-                    fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover"
+                    quality={64}
                   />
                 </button>
               ))}
@@ -289,11 +296,11 @@ export const ProjectModal = ({
                   className="group text-left"
                 >
                   <div className="relative mb-4 aspect-[16/10] overflow-hidden rounded-[20px]">
-                    <Image
+                    <LazyFrame
                       src={item.image}
                       alt={item.name}
-                      fill
                       sizes="(max-width: 768px) 100vw, 50vw"
+                      quality={64}
                       className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                     />
                   </div>
@@ -382,6 +389,7 @@ export const ProjectModal = ({
                 alt={project.name}
                 fill
                 sizes="80vw"
+                quality={75}
                 className="object-contain"
               />
             </div>
