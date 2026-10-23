@@ -9,7 +9,7 @@ const chapters = [
     id: "craft",
     index: "01",
     title: "Пользоваться каждый день",
-    text: "Мы не делаем мебель ради мебели. Задача — чтобы пространством было удобно жить и работать, а не только снимать его.",
+    text: "Чтобы пространством было удобно жить и работать — не только снимать его.",
     image: "/assets/about_img.png",
     caption: "Мастерская · Краснодар",
   },
@@ -84,8 +84,8 @@ export const About = () => {
         </div>
 
         <div className="flex flex-col justify-center">
-          <p className="mb-8 max-w-[36ch] font-manrope text-[16px] leading-relaxed text-black/55 md:text-[17px]">
-            Мы решаем задачу так, чтобы этим было удобно пользоваться каждый день — и чтобы это выглядело собранно.
+          <p className="mb-8 max-w-[34ch] font-manrope text-[16px] leading-relaxed text-black/55 md:text-[17px]">
+            Сначала — как здесь будут пользоваться. Потом стыки, свет и материал.
           </p>
 
           <div className="border-t border-black/10">
