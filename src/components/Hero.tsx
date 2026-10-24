@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { RequestModal } from "@/components/RequestModal";
 import { Magnetic } from "@/components/Magnetic";
@@ -19,6 +19,18 @@ export const Hero = () => {
   const contentY = useTransform(scrollY, [0, 480], [0, -36]);
   const contentOpacity = useTransform(scrollY, [0, 360], [1, 0.2]);
   const [isRequestOpen, setIsRequestOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
+
+  useEffect(() => {
+    if (!navOpen) return;
+    const close = (event: PointerEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest(".hero-nav")) return;
+      setNavOpen(false);
+    };
+    window.addEventListener("pointerdown", close);
+    return () => window.removeEventListener("pointerdown", close);
+  }, [navOpen]);
 
   return (
     <section id="hero" className="relative w-full min-h-[100svh] overflow-hidden bg-black">
@@ -93,26 +105,45 @@ export const Hero = () => {
           </motion.div>
         </div>
 
-        {/* Logo pill → expands on hover (desktop), always open on mobile */}
+        {/* Logo pill: tap on mobile, hover on desktop */}
         <div className="fixed z-50 left-1/2 top-[14px] md:top-[20px] -translate-x-1/2 group hero-nav">
-          <nav className="relative h-[50px] md:h-[56px] w-[58px] md:w-[64px] max-md:w-[min(92vw,520px)] group-hover:w-[min(92vw,520px)] transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden rounded-full">
-            <div className="absolute inset-0 rounded-full border border-white/12 bg-black/40 backdrop-blur-xl opacity-0 group-hover:opacity-100 max-md:opacity-100 transition-opacity duration-400" />
+          <nav
+            className={`relative h-[50px] md:h-[56px] overflow-hidden rounded-full transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:w-[64px] md:group-hover:w-[min(92vw,520px)] ${
+              navOpen ? "w-[min(94vw,560px)]" : "w-[58px]"
+            }`}
+          >
+            <div
+              className={`absolute inset-0 rounded-full border border-white/12 bg-black/40 backdrop-blur-xl transition-opacity duration-400 md:opacity-0 md:group-hover:opacity-100 ${
+                navOpen ? "opacity-100" : "opacity-0"
+              }`}
+            />
 
-            <div className="absolute inset-0 flex items-center justify-end gap-5 md:gap-7 pr-5 md:pr-7 pl-[56px] md:pl-[64px] opacity-0 group-hover:opacity-100 max-md:opacity-100 transition-opacity duration-300 delay-100 pointer-events-none group-hover:pointer-events-auto max-md:pointer-events-auto">
+            <div
+              className={`absolute inset-0 flex items-center justify-end gap-3 pr-4 pl-[68px] transition-opacity duration-300 md:gap-7 md:pr-7 md:pl-[64px] md:pointer-events-none md:opacity-0 md:group-hover:pointer-events-auto md:group-hover:opacity-100 ${
+                navOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+              }`}
+            >
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="font-unbounded t-nav whitespace-nowrap text-white/75 transition-colors hover:text-white"
+                  onClick={() => setNavOpen(false)}
+                  className="font-unbounded whitespace-nowrap text-[12px] text-white/75 transition-colors hover:text-white md:text-[14px]"
                 >
                   {link.label}
                 </a>
               ))}
             </div>
 
-            <div className="absolute left-[8px] md:left-[10px] top-1/2 z-10 size-[34px] md:size-[36px] -translate-y-1/2 overflow-hidden rounded-[10px]">
-              <img src="/assets/monoburo-mark.svg" alt="Monoburo" className="block size-full" />
-            </div>
+            <button
+              type="button"
+              aria-label={navOpen ? "Закрыть меню" : "Открыть меню"}
+              aria-expanded={navOpen}
+              onClick={() => setNavOpen((open) => !open)}
+              className="absolute left-[8px] top-1/2 z-10 size-[34px] -translate-y-1/2 overflow-hidden rounded-[10px] md:left-[10px] md:size-[36px] md:pointer-events-none"
+            >
+              <img src="/assets/monoburo-mark.svg" alt="" className="block size-full" />
+            </button>
           </nav>
         </div>
       </div>

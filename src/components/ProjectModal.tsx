@@ -166,7 +166,7 @@ export const ProjectModal = ({
               alt={project.name}
               fill
               priority
-              quality={72}
+              quality={86}
               sizes="100vw"
               className="object-cover"
             />
@@ -265,7 +265,7 @@ export const ProjectModal = ({
               alt={project.name}
               sizes="100vw"
               priority
-              quality={70}
+              quality={86}
             />
           </button>
         </div>
@@ -303,7 +303,7 @@ export const ProjectModal = ({
                     src={src}
                     alt={`${project.name} — ${index + 2}`}
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    quality={64}
+                    quality={86}
                   />
                 </button>
               ))}
@@ -400,7 +400,7 @@ export const ProjectModal = ({
                       src={item.image}
                       alt={item.name}
                       sizes="(max-width: 768px) 100vw, 50vw"
-                      quality={64}
+                      quality={86}
                       className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                     />
                   </div>
@@ -489,7 +489,7 @@ export const ProjectModal = ({
                 alt={project.name}
                 fill
                 sizes="80vw"
-                quality={75}
+                quality={88}
                 className="object-contain"
               />
             </div>

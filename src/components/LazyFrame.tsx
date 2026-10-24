@@ -17,11 +17,12 @@ export function LazyFrame({
   alt,
   sizes,
   priority = false,
-  quality = 68,
+  quality = 86,
   className = "object-cover",
 }: LazyFrameProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(priority);
+  const alreadyWeb = src.endsWith(".webp");
 
   useEffect(() => {
     if (priority) return;
@@ -33,7 +34,7 @@ export function LazyFrame({
         setVisible(true);
         io.disconnect();
       },
-      { rootMargin: "280px" }
+      { rootMargin: "120px" }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -49,6 +50,7 @@ export function LazyFrame({
           sizes={sizes}
           quality={quality}
           priority={priority}
+          unoptimized={alreadyWeb}
           className={className}
         />
       ) : null}

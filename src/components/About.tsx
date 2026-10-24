@@ -71,7 +71,7 @@ export const About = () => {
                 alt={chapter.caption}
                 fill
                 sizes="(max-width: 768px) 100vw, 58vw"
-                quality={72}
+                quality={86}
                 className="object-cover"
                 priority={active === 0}
               />
