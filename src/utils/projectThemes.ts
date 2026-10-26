@@ -35,7 +35,7 @@ const BY_NAME: Record<string, ProjectTheme> = {
     ink: "#1C2A2B",
     heroOverlay: "linear-gradient(180deg, transparent 25%, rgba(28,42,43,0.78) 100%)",
   },
-  "Серф кофе": {
+  "surf coffee": {
     label: "HoReCa · энергия",
     accent: "#C45C26",
     accentSoft: "rgba(196,92,38,0.14)",

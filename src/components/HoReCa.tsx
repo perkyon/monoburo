@@ -63,7 +63,7 @@ const projects: Project[] = [
   },
   {
     id: 3,
-    name: "Серф кофе",
+    name: "surf coffee",
     image: "/figma/preview-surf.webp",
     location: "Тургенева 151, Краснодар",
     details: {

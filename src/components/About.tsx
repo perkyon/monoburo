@@ -19,7 +19,7 @@ const chapters = [
     title: "Дом, офис, HoReCa",
     text: "Корпусная и отдельно стоящая мебель, кофейни, офисы, жилые интерьеры. Один язык — разные сценарии.",
     image: "/figma/preview-surf.webp",
-    caption: "HoReCa · Серф кофе",
+    caption: "HoReCa · surf coffee",
   },
   {
     id: "finish",
