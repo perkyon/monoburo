@@ -16,11 +16,16 @@ import {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteName} — дизайн и производство мебели`,
-    template: `%s — ${siteName}`,
+    default: "monoburo",
+    template: `%s — monoburo`,
   },
   description: siteDescription,
-  applicationName: siteName,
+  applicationName: "monoburo",
+  appleWebApp: {
+    capable: true,
+    title: "monoburo",
+    statusBarStyle: "default",
+  },
   category: "Design",
   keywords: [
     "дизайн мебели",
@@ -69,9 +74,14 @@ export const metadata: Metadata = {
     images: [siteOgImage],
   },
   icons: {
-    icon: { url: "/favicon.svg", type: "image/svg+xml" },
-    shortcut: { url: "/favicon.svg", type: "image/svg+xml" },
-    apple: { url: siteLogo, type: "image/svg+xml" },
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
   },
   formatDetection: {
     telephone: false,
