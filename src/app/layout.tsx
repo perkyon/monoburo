@@ -54,8 +54,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    siteName,
-    title: `${siteName} — дизайн и производство мебели`,
+    siteName: "monoburo",
+    title: "monoburo",
     description: siteDescription,
     locale: siteLocale,
     images: [
@@ -69,19 +69,18 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteName} — дизайн и производство мебели`,
+    title: "monoburo",
     description: siteDescription,
     images: [siteOgImage],
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "48x48" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/apple-touch-icon.png?v=2", sizes: "180x180", type: "image/png" },
+      { url: "/icon-192.png?v=2", sizes: "192x192", type: "image/png" },
+      { url: "/favicon-32x32.png?v=2", sizes: "32x32", type: "image/png" },
     ],
-    shortcut: "/favicon.ico",
-    apple: { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    shortcut: "/apple-touch-icon.png?v=2",
+    apple: { url: "/apple-touch-icon.png?v=2", sizes: "180x180", type: "image/png" },
   },
   formatDetection: {
     telephone: false,
@@ -201,8 +200,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
-        <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/apple-touch-icon.png?v=2" type="image/png" sizes="180x180" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-KJVBD9CH2B"
           strategy="afterInteractive"
