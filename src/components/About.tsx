@@ -10,7 +10,7 @@ const chapters = [
     index: "01",
     title: "Пользоваться каждый день",
     text: "Чтобы пространством было удобно жить и работать — не только снимать его.",
-    image: "/assets/about_img.png",
+    image: "/assets/about_workshop.jpg",
     caption: "Мастерская · Краснодар",
   },
   {
