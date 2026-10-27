@@ -11,11 +11,11 @@ interface RevealProps {
 export const Reveal = ({ children, width = "100%" }: RevealProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      style={{ position: "relative", width, overflow: "visible" }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: "-8% 0px" }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      style={{ position: "relative", width }}
     >
       {children}
     </motion.div>

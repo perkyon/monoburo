@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
 import { ProjectModal, type Project, type ProjectCategory } from "@/components/ProjectModal";
 import { SectionTitle } from "@/components/SectionTitle";
 import { LazyFrame } from "@/components/LazyFrame";
@@ -82,7 +81,6 @@ export const Projects = () => {
       {activeProject && (
         <ProjectModal
           project={activeProject}
-          layoutId={`project-cover-${activeProject.id}`}
           related={relatedProjects(activeProject)}
           onOpenRelated={(next) => setActiveProject(next)}
           onClose={() => setActiveProject(null)}
@@ -147,11 +145,7 @@ function CaseRow({
         className="relative overflow-hidden rounded-[24px] p-2.5 md:rounded-[32px] md:p-3.5"
         style={{ background: theme.panel }}
       >
-        <motion.div
-          layoutId={`project-cover-${project.id}`}
-          className="relative aspect-[16/11] overflow-hidden rounded-[16px] md:rounded-[22px]"
-          transition={{ type: "spring", stiffness: 260, damping: 30 }}
-        >
+        <div className="relative aspect-[16/11] overflow-hidden rounded-[16px] md:rounded-[22px]">
           <LazyFrame
             src={project.image}
             alt={project.name}
@@ -160,7 +154,7 @@ function CaseRow({
             quality={86}
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
-        </motion.div>
+        </div>
       </div>
     </button>
   );

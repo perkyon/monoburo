@@ -53,7 +53,6 @@ function splitCopy(value?: string) {
 type ProjectModalProps = {
   project: Project;
   onClose: () => void;
-  layoutId?: string;
   related?: Project[];
   onOpenRelated?: (project: Project) => void;
 };
@@ -61,7 +60,6 @@ type ProjectModalProps = {
 export const ProjectModal = ({
   project,
   onClose,
-  layoutId,
   related = [],
   onOpenRelated,
 }: ProjectModalProps) => {
@@ -155,10 +153,8 @@ export const ProjectModal = ({
 
       <article>
         <header className="relative min-h-[72svh] overflow-hidden bg-[var(--background)] text-white md:min-h-[78svh]">
-          <motion.div
+          <div
             className="absolute inset-0 origin-bottom"
-            layoutId={layoutId ?? `project-cover-${project.id}`}
-            transition={{ type: "spring", stiffness: 240, damping: 32 }}
             style={{ clipPath: "polygon(0 0, 100% 0, 100% 78%, 0 100%)" }}
           >
             <Image
@@ -172,7 +168,7 @@ export const ProjectModal = ({
             />
             <div className="absolute inset-0 bg-black/35" />
             <div className="absolute inset-0" style={{ background: theme.heroOverlay }} />
-          </motion.div>
+          </div>
 
           <div className="relative z-10 flex min-h-[72svh] flex-col justify-end px-5 pb-[18%] pt-24 md:min-h-[78svh] md:px-12 md:pb-[14%] lg:px-20">
             <p className="mb-5 font-unbounded text-[12px] uppercase tracking-[0.28em] text-white/70">

@@ -8,7 +8,7 @@ export const Events = () => {
   const logos = [1, 2, 3, 4, 5, 6];
 
   return (
-    <section id="events" className="relative w-full stacked-card py-10 md:py-16">
+    <section id="events" className="relative w-full py-10 md:py-16">
       <div className="container-page">
         <SectionTitle eyebrow="Коллаборации" title="Мероприятия" className="mb-8 md:mb-12" />
 

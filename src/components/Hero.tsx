@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { RequestModal } from "@/components/RequestModal";
 import { Magnetic } from "@/components/Magnetic";
 
@@ -14,10 +14,6 @@ const navLinks = [
 ] as const;
 
 export const Hero = () => {
-  const { scrollY } = useScroll();
-  const bgY = useTransform(scrollY, [0, 900], [0, 140]);
-  const contentY = useTransform(scrollY, [0, 480], [0, -36]);
-  const contentOpacity = useTransform(scrollY, [0, 360], [1, 0.2]);
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
 
@@ -39,7 +35,7 @@ export const Hero = () => {
       </h1>
 
       <div className="relative w-full min-h-[100svh]">
-        <motion.div className="absolute inset-0 h-[118%] w-full" style={{ y: bgY }}>
+        <div className="absolute inset-0 h-full w-full">
           <Image
             src="/assets/hero-bg.png"
             alt=""
@@ -49,15 +45,12 @@ export const Hero = () => {
             sizes="100vw"
             className="object-cover object-[center_30%] pointer-events-none"
           />
-        </motion.div>
+        </div>
 
         <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.25)_55%,rgba(0,0,0,0.72)_100%)]" />
         <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/50 via-transparent to-black/75" />
 
-        <motion.div
-          className="absolute inset-0 z-[2] flex flex-col items-center justify-center px-6"
-          style={{ y: contentY, opacity: contentOpacity }}
-        >
+        <div className="absolute inset-0 z-[2] flex flex-col items-center justify-center px-6">
           <motion.img
             src="/assets/monoburo-logo.svg"
             alt="Монобюро"
@@ -91,7 +84,7 @@ export const Hero = () => {
               </button>
             </Magnetic>
           </motion.div>
-        </motion.div>
+        </div>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-8 z-[2] flex justify-center">
           <motion.div
