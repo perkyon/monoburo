@@ -16,6 +16,7 @@ const columns = [
     title: "О компании",
     items: [
       { label: "О нас", href: "#about" },
+      { label: "Цех", href: "#workshop" },
       { label: "Проекты", href: "#projects" },
       { label: "Мероприятия", href: "#events" },
     ],

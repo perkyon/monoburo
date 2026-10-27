@@ -8,6 +8,7 @@ import { Magnetic } from "@/components/Magnetic";
 
 const navLinks = [
   { href: "#about", label: "О нас" },
+  { href: "#workshop", label: "Цех" },
   { href: "#projects", label: "Проекты" },
   { href: "#events", label: "Мероприятия" },
   { href: "#contacts", label: "Контакты" },
@@ -101,8 +102,8 @@ export const Hero = () => {
         {/* Logo pill: tap on mobile, hover on desktop */}
         <div className="fixed z-50 left-1/2 top-[14px] md:top-[20px] -translate-x-1/2 group hero-nav">
           <nav
-            className={`relative h-[50px] md:h-[56px] overflow-hidden rounded-full transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:w-[64px] md:group-hover:w-[min(92vw,520px)] ${
-              navOpen ? "w-[min(94vw,560px)]" : "w-[58px]"
+            className={`relative h-[50px] md:h-[56px] overflow-hidden rounded-full transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:w-[64px] md:group-hover:w-[min(94vw,640px)] ${
+              navOpen ? "w-[min(96vw,640px)]" : "w-[58px]"
             }`}
           >
             <div
