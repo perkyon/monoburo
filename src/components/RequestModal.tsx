@@ -18,7 +18,6 @@ export const RequestModal = ({ onClose }: RequestModalProps) => {
   useLayoutEffect(() => {
     const html = document.documentElement;
     const originalHtmlOverflow = html.style.overflow;
-    const originalScrollRestoration = window.history.scrollRestoration;
     const scrollY = window.scrollY;
     document.body.style.position = "fixed";
     document.body.style.top = `-${scrollY}px`;
@@ -35,7 +34,6 @@ export const RequestModal = ({ onClose }: RequestModalProps) => {
       document.body.style.overflow = "";
       html.style.overflow = originalHtmlOverflow;
       document.body.classList.remove("modal-open");
-      window.history.scrollRestoration = originalScrollRestoration;
       window.scrollTo({ top: y, left: 0, behavior: "auto" });
       document.documentElement.scrollTop = y;
       document.body.scrollTop = y;

@@ -62,7 +62,7 @@ export const Workshop = () => {
           videoRef.current?.pause();
         }
       },
-      { rootMargin: "180px 0px", threshold: 0.2 }
+      { rootMargin: "0px", threshold: 0.4 }
     );
 
     io.observe(node);
