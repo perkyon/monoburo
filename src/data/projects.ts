@@ -30,7 +30,7 @@ export const allProjects: Project[] = [
     category: "horeca",
     kind: "Кафе",
     year: "2025",
-    image: "/figma/surf2.png",
+    image: "/figma/preview-surf.webp",
     location: "Тургенева 151, Краснодар",
     tags: ["HoReCa", "свет", "зонирование", "трафик"],
     stats: [
@@ -72,6 +72,7 @@ export const allProjects: Project[] = [
         "Сложный свет: нужно было одновременно подсветить бар, не выжечь лица за столами и не получить грязные тени на фактурах.\n\nБольшой объём столярки в короткий срок — бар, посадка, технические модули. Плюс согласование материалов с брендом: то, что хорошо смотрится на сэмпле, должно было выдержать трафик.",
     },
     gallery: [
+      "/figma/preview-surf.webp",
       "/figma/surf2.png",
       "/figma/surf-extra-1.webp",
       "/figma/surf-extra-2.webp",

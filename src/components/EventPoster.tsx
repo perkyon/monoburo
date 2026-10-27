@@ -1,5 +1,5 @@
-import Image from "next/image";
 import type { DesignerBreakfast } from "@/data/events";
+import Image from "next/image";
 
 export function EventPoster({ event }: { event: DesignerBreakfast }) {
   if (event.posterImage) {
@@ -18,36 +18,29 @@ export function EventPoster({ event }: { event: DesignerBreakfast }) {
   }
 
   return (
-    <article className="relative min-h-[480px] overflow-hidden rounded-[24px] md:min-h-[640px] md:rounded-[32px]">
-      <Image
-        src={event.photo}
-        alt={`${event.place} · ${event.theme}`}
-        fill
-        quality={90}
-        sizes="(max-width: 768px) 100vw, 58vw"
-        className="object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-      <div className="absolute right-5 top-5 flex size-11 items-center justify-center rounded-full bg-white md:right-7 md:top-7 md:size-12">
+    <article className="flex min-h-[480px] flex-col justify-between rounded-[24px] bg-black px-7 py-8 text-white md:min-h-[640px] md:rounded-[32px] md:px-10 md:py-12">
+      <div className="flex size-11 items-center justify-center rounded-full bg-white md:size-12">
         <img src="/assets/monoburo-mark.svg" alt="" className="size-7 md:size-8" />
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 p-5 md:p-8">
-        <p className="font-unbounded text-[11px] uppercase tracking-[0.18em] text-white/75">
+      <div>
+        <p className="font-unbounded text-[11px] uppercase tracking-[0.22em] text-white/45">
           {event.title.join(" · ")}
         </p>
-        <h3 className="mt-2 max-w-[16ch] font-unbounded text-[26px] font-medium leading-[1.08] tracking-[-0.03em] text-white md:text-[34px]">
+        <h3 className="mt-4 max-w-[14ch] font-unbounded text-[32px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[44px]">
           {event.theme}
         </h3>
-        <p className="mt-3 font-unbounded text-[12px] uppercase tracking-[0.16em] text-white/70">
+        <p className="mt-5 max-w-[36ch] font-manrope text-[15px] leading-relaxed text-white/55 md:text-[16px]">
+          {event.description}
+        </p>
+        <p className="mt-6 font-unbounded text-[12px] uppercase tracking-[0.16em] text-white/50">
           {event.place} · {event.address}
         </p>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-6 flex flex-wrap gap-2">
           {event.axes.map((axis) => (
             <span
               key={axis.label}
-              className="rounded-full border border-white/25 px-3 py-1 font-unbounded text-[10px] uppercase tracking-[0.14em] text-white/80"
+              className="rounded-full border border-white/20 px-3 py-1 font-unbounded text-[10px] uppercase tracking-[0.14em] text-white/70"
             >
               {axis.label}
             </span>

@@ -12,8 +12,7 @@ export type DesignerBreakfast = {
   address: string;
   when: string;
   axes: BreakfastAxis[];
-  photo: string;
-  /** Готовая афиша. Если есть — показываем её, иначе собираем макет. */
+  /** Готовая афиша. Если нет — собираем набор без чужих фото. */
   posterImage?: string;
 };
 
@@ -32,5 +31,4 @@ export const currentBreakfast: DesignerBreakfast = {
     { label: "разбор", value: 5 },
     { label: "цех", value: 4 },
   ],
-  photo: "/figma/surf2.png",
 };

@@ -64,7 +64,7 @@ const projects: Project[] = [
   {
     id: 3,
     name: "surf coffee",
-    image: "/figma/surf2.png",
+    image: "/figma/preview-surf.webp",
     location: "Тургенева 151, Краснодар",
     details: {
       lead: "Про энергию и «картинку» — интерьер, который работает и днём, и вечером.",
@@ -79,6 +79,7 @@ const projects: Project[] = [
       challenges: "сложный свет, большой объём столярки, согласование материалов"
     },
     gallery: [
+      "/figma/preview-surf.webp",
       "/figma/surf2.png",
       "/figma/surf-extra-1.webp",
       "/figma/surf-extra-2.webp",
