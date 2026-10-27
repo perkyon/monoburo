@@ -1,4 +1,5 @@
 import type { DesignerBreakfast } from "@/data/events";
+import { formatEventDay, formatEventMonth } from "@/data/events";
 import Image from "next/image";
 
 export function EventPoster({ event }: { event: DesignerBreakfast }) {
@@ -7,7 +8,7 @@ export function EventPoster({ event }: { event: DesignerBreakfast }) {
       <div className="relative min-h-[480px] overflow-hidden rounded-[24px] md:min-h-[640px] md:rounded-[32px]">
         <Image
           src={event.posterImage}
-          alt={`${event.title.join(" ")} — ${event.theme}`}
+          alt={`${event.theme} — ${formatEventMonth(event.date)}`}
           fill
           quality={90}
           sizes="(max-width: 768px) 100vw, 52vw"
@@ -19,8 +20,18 @@ export function EventPoster({ event }: { event: DesignerBreakfast }) {
 
   return (
     <article className="flex min-h-[480px] flex-col justify-between rounded-[24px] bg-black px-7 py-8 text-white md:min-h-[640px] md:rounded-[32px] md:px-10 md:py-12">
-      <div className="flex size-11 items-center justify-center rounded-full bg-white md:size-12">
-        <img src="/assets/monoburo-mark.svg" alt="" className="size-7 md:size-8" />
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex size-11 items-center justify-center rounded-full bg-white md:size-12">
+          <img src="/assets/monoburo-mark.svg" alt="" className="size-7 md:size-8" />
+        </div>
+        <p className="text-right font-unbounded leading-none">
+          <span className="block text-[42px] font-medium tracking-[-0.04em] md:text-[56px]">
+            {formatEventDay(event.date)}
+          </span>
+          <span className="mt-1 block text-[12px] uppercase tracking-[0.18em] text-white/50">
+            {formatEventMonth(event.date)}
+          </span>
+        </p>
       </div>
 
       <div>

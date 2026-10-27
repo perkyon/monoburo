@@ -1,10 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { SectionTitle } from "@/components/SectionTitle";
 import { EventPoster } from "@/components/EventPoster";
 import { RequestModal } from "@/components/RequestModal";
-import { currentBreakfast } from "@/data/events";
+import {
+  breakfasts,
+  eventStatus,
+  formatEventDate,
+  formatEventPill,
+  getInitialBreakfastIndex,
+  statusLabel,
+} from "@/data/events";
 
 const ticker = [
   "завтрак",
@@ -18,45 +26,119 @@ const ticker = [
 
 export const Events = () => {
   const [isRequestOpen, setIsRequestOpen] = useState(false);
-  const event = currentBreakfast;
+  const [active, setActive] = useState(getInitialBreakfastIndex);
+  const event = breakfasts[active];
+  const status = eventStatus(event);
+
+  const nextUpcomingIndex = useMemo(
+    () => breakfasts.findIndex((item) => eventStatus(item) !== "past"),
+    []
+  );
+  const isNextUpcoming = status !== "past" && active === nextUpcomingIndex;
+  const label = statusLabel(status, isNextUpcoming);
+  const canPrev = active > 0;
+  const canNext = active < breakfasts.length - 1;
 
   return (
     <section id="events" className="relative w-full py-16 md:py-24">
       <div className="container-page">
-        <div className="mb-8 flex flex-col gap-6 md:mb-12 md:flex-row md:items-end md:justify-between">
+        <div className="mb-8 flex flex-col gap-6 md:mb-10 md:flex-row md:items-end md:justify-between">
           <SectionTitle eyebrow="Surf Coffee × Monoburo" title="Завтраки с дизайнерами" />
           <p className="max-w-sm font-manrope text-[15px] leading-relaxed text-black/50 md:text-right">
             Собираемся в Surf на Тургенева. Тема каждого выпуска новая. Формат один.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-[1.15fr_0.85fr] md:gap-12">
-          <EventPoster event={event} />
+        <div className="mb-8 flex flex-wrap items-center gap-2 md:mb-10">
+          {breakfasts.map((item, index) => {
+            const itemStatus = eventStatus(item);
+            const isActive = index === active;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setActive(index)}
+                className={`h-[44px] rounded-full px-5 font-unbounded text-[13px] transition ${
+                  isActive
+                    ? "btn-ink"
+                    : "border border-black/12 text-black/45 hover:border-black/30 hover:text-black"
+                }`}
+              >
+                {formatEventPill(item.date)}
+                {itemStatus === "past" && !isActive ? (
+                  <span className="ml-2 text-[10px] uppercase tracking-[0.12em] opacity-60">архив</span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
 
-          <div className="flex flex-col justify-center md:min-h-full md:py-4">
-            <p className="font-unbounded text-[12px] uppercase tracking-[0.18em] text-black/40">
-              Ближайший выпуск
-            </p>
-            <p className="mt-3 font-unbounded text-[28px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[36px]">
-              {event.theme}
-            </p>
-            <p className="mt-4 max-w-[34ch] font-manrope text-[15px] leading-relaxed text-black/55 md:text-[16px]">
-              {event.description}
-            </p>
+        <div className="grid grid-cols-1 items-stretch gap-8 md:grid-cols-[1.15fr_0.85fr] md:gap-12">
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={event.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <EventPoster event={event} />
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-            <dl className="mt-8 border-t border-black/10">
-              <InfoRow label="Где" value={`${event.place} · ${event.address}`} />
-              <InfoRow label="Когда" value={event.when} />
-              <InfoRow label="Для кого" value="Дизайнеры мебели и интерьера" />
-            </dl>
+          <div className="flex flex-col justify-between md:py-2">
+            <div>
+              <p className="font-unbounded text-[12px] uppercase tracking-[0.18em] text-black/40">
+                {label}
+              </p>
+              <p className="mt-3 font-unbounded text-[28px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[36px]">
+                {event.theme}
+              </p>
+              <p className="mt-4 max-w-[34ch] font-manrope text-[15px] leading-relaxed text-black/55 md:text-[16px]">
+                {event.description}
+              </p>
 
-            <button
-              type="button"
-              onClick={() => setIsRequestOpen(true)}
-              className="btn-ink mt-8 h-[52px] self-start px-8 font-unbounded text-[14px]"
-            >
-              Записаться на завтрак
-            </button>
+              <dl className="mt-8 border-t border-black/10">
+                <InfoRow label="Где" value={`${event.place} · ${event.address}`} />
+                <InfoRow label="Когда" value={formatEventDate(event.date)} />
+                <InfoRow label="Для кого" value="Дизайнеры мебели и интерьера" />
+              </dl>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setIsRequestOpen(true)}
+                className="btn-ink h-[52px] px-8 font-unbounded text-[14px]"
+              >
+                {status === "past" ? "На следующий завтрак" : "Записаться на завтрак"}
+              </button>
+              <div className="ml-auto flex items-center gap-2">
+                <button
+                  type="button"
+                  aria-label="Предыдущий выпуск"
+                  disabled={!canPrev}
+                  onClick={() => setActive((index) => Math.max(0, index - 1))}
+                  className="flex size-[44px] items-center justify-center rounded-full border border-black/12 font-unbounded text-[18px] disabled:opacity-30"
+                >
+                  ←
+                </button>
+                <span className="min-w-[4ch] text-center font-unbounded text-[12px] text-black/40">
+                  {String(active + 1).padStart(2, "0")} / {String(breakfasts.length).padStart(2, "0")}
+                </span>
+                <button
+                  type="button"
+                  aria-label="Следующий выпуск"
+                  disabled={!canNext}
+                  onClick={() => setActive((index) => Math.min(breakfasts.length - 1, index + 1))}
+                  className="flex size-[44px] items-center justify-center rounded-full border border-black/12 font-unbounded text-[18px] disabled:opacity-30"
+                >
+                  →
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
