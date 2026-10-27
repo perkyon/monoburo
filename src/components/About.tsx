@@ -18,7 +18,7 @@ const chapters = [
     index: "02",
     title: "Дом, офис, HoReCa",
     text: "Корпусная и отдельно стоящая мебель, кофейни, офисы, жилые интерьеры. Один язык — разные сценарии.",
-    image: "/figma/preview-surf.webp",
+    image: "/figma/surf2.png",
     caption: "HoReCa · surf coffee",
   },
   {
@@ -71,7 +71,7 @@ export const About = () => {
                 alt={chapter.caption}
                 fill
                 sizes="(max-width: 768px) 100vw, 58vw"
-                quality={86}
+                quality={90}
                 className="object-cover"
                 priority={active === 0}
               />

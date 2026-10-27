@@ -30,7 +30,7 @@ export const allProjects: Project[] = [
     category: "horeca",
     kind: "Кафе",
     year: "2025",
-    image: "/figma/preview-surf.webp",
+    image: "/figma/surf2.png",
     location: "Тургенева 151, Краснодар",
     tags: ["HoReCa", "свет", "зонирование", "трафик"],
     stats: [

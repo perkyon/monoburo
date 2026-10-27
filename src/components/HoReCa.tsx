@@ -64,7 +64,7 @@ const projects: Project[] = [
   {
     id: 3,
     name: "surf coffee",
-    image: "/figma/preview-surf.webp",
+    image: "/figma/surf2.png",
     location: "Тургенева 151, Краснодар",
     details: {
       lead: "Про энергию и «картинку» — интерьер, который работает и днём, и вечером.",
@@ -158,6 +158,7 @@ export const HoReCa = () => {
                     src={project.image}
                     alt={project.name}
                     fill
+                    quality={90}
                     className="object-cover pointer-events-none transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>

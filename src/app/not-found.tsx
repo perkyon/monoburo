@@ -7,7 +7,7 @@ export default function NotFound() {
       {/* Desktop / large screens – оригинальный макет 1440px */}
       <div className="relative hidden lg:block w-[1440px] h-[1024px] mx-auto">
         <div className="absolute left-[402px] top-[153px] w-[637px] h-[637px] rounded-[40px] overflow-hidden">
-          <Image src="/figma/notfound-bg.png" alt="404" fill className="object-cover" />
+          <Image src="/figma/notfound-bg.png" alt="404" fill quality={90} className="object-cover" />
         </div>
 
         <nav className="absolute left-[501px] top-[49px] w-[439px] h-[57px] rounded-[20px] bg-white/70 backdrop-blur-xl border border-black/5 shadow-[0_4px_4px_rgba(0,0,0,0.6)] flex items-center gap-[45px] pl-[75px]">
@@ -47,7 +47,7 @@ export default function NotFound() {
       {/* Mobile / tablet */}
       <div className="flex w-full max-w-md flex-col items-center text-center gap-6 lg:hidden">
         <div className="relative w-full max-w-[260px] aspect-square rounded-[32px] overflow-hidden mx-auto">
-          <Image src="/figma/notfound-bg.png" alt="404" fill className="object-cover" />
+          <Image src="/figma/notfound-bg.png" alt="404" fill quality={90} className="object-cover" />
         </div>
 
         <span className="font-unbounded text-[96px] leading-none text-black">404</span>

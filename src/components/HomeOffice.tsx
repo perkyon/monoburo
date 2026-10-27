@@ -79,6 +79,7 @@ export const HomeOffice = () => {
                     src={project.image}
                     alt={project.name}
                     fill
+                    quality={90}
                     className="object-cover pointer-events-none transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>

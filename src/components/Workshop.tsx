@@ -75,6 +75,7 @@ export const Workshop = () => {
               alt="Цех Monoburo"
               fill
               sizes="(max-width: 768px) 100vw, 46vw"
+              quality={90}
               className="object-cover"
             />
           )}
@@ -112,7 +113,7 @@ export const Workshop = () => {
               alt="Станок в цехе Monoburo"
               fill
               sizes="(max-width: 768px) 100vw, 40vw"
-              quality={86}
+              quality={90}
               className="object-cover"
             />
           </div>

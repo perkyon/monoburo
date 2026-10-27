@@ -14,10 +14,10 @@ export const Events = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
           <div className="relative h-[280px] md:h-[520px] overflow-hidden rounded-[24px] md:rounded-[36px]">
-            <Image src="/assets/event1.png" alt="Мероприятие Monoburo" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+            <Image src="/assets/event1.png" alt="Мероприятие Monoburo" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" quality={90} />
           </div>
           <div className="relative h-[280px] md:h-[520px] overflow-hidden rounded-[24px] md:rounded-[36px]">
-            <Image src="/assets/event2.png" alt="Мероприятие Monoburo" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+            <Image src="/assets/event2.png" alt="Мероприятие Monoburo" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" quality={90} />
           </div>
         </div>
 
@@ -35,6 +35,7 @@ export const Events = () => {
                     src="/assets/russian_house.png"
                     alt="Русский дом"
                     fill
+                    quality={90}
                     className="object-contain pointer-events-none"
                   />
                 </div>

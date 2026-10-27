@@ -151,7 +151,7 @@ function CaseRow({
             alt={project.name}
             sizes="(max-width: 768px) 100vw, 55vw"
             priority={index < 3}
-            quality={86}
+            quality={90}
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
         </div>

@@ -17,7 +17,7 @@ export function LazyFrame({
   alt,
   sizes,
   priority = false,
-  quality = 86,
+  quality = 90,
   className = "object-cover",
 }: LazyFrameProps) {
   const ref = useRef<HTMLDivElement>(null);

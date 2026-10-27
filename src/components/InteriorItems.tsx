@@ -144,7 +144,7 @@ export const InteriorItems = ({ onSelect, scrollRef }: InteriorItemsProps) => {
             onClick={() => onSelect(project)}
             className="group relative h-[360px] md:h-[60vh] md:max-h-[720px] w-[78vw] md:w-[520px] shrink-0 snap-start overflow-hidden rounded-[20px] md:rounded-[28px] text-left"
           >
-            <Image src={project.image} alt={project.name} fill className="object-cover" />
+            <Image src={project.image} alt={project.name} fill quality={90} className="object-cover" />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
             <div className="absolute bottom-[16px] left-[20px] text-white">
               <p className="t-h3 font-semibold">{project.name}</p>
