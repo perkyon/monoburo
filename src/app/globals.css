@@ -9,6 +9,7 @@
   --ink: #0a0a0a;
   --font-unbounded-face: "Unbounded", system-ui, sans-serif;
   --font-manrope-face: "Manrope", system-ui, sans-serif;
+  --font-poster-face: "Cormorant Garamond", Georgia, serif;
 }
 
 html {
@@ -33,6 +34,7 @@ section[id] {
   --color-muted: var(--muted);
   --font-unbounded: var(--font-unbounded-face), system-ui, sans-serif;
   --font-manrope: var(--font-manrope-face), system-ui, sans-serif;
+  --font-poster: var(--font-poster-face), Georgia, serif;
 }
 
 body {
@@ -115,6 +117,9 @@ body.modal-open {
   }
   .font-display {
     font-family: var(--font-unbounded-face), system-ui, sans-serif;
+  }
+  .font-poster {
+    font-family: var(--font-poster-face), Georgia, serif;
   }
 }
 
