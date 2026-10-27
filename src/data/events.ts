@@ -32,5 +32,5 @@ export const currentBreakfast: DesignerBreakfast = {
     { label: "разбор", value: 5 },
     { label: "цех", value: 4 },
   ],
-  photo: "/assets/about_workshop.jpg",
+  photo: "/figma/surf2.png",
 };

@@ -146,7 +146,7 @@ export default function RootLayout({
     description: siteDescription,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Дальний проезд, 11к1",
+      streetAddress: "улица имени Калинина, 1Л",
       addressLocality: "Краснодар",
       addressRegion: "Краснодарский край",
       addressCountry: "RU",

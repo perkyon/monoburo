@@ -17,8 +17,8 @@ export const contactWhatsAppDisplay = "+7 (918) 136-55-58";
 export const contactTelegram = "https://t.me/RusRus0808";
 export const contactTelegramHandle = "@RusRus0808";
 /** Физический адрес (офис/шоурум) */
-export const physicalAddress = "г. Краснодар, Дальний проезд, 11к1";
-export const physicalAddressShort = "Дальний проезд, 11к1, Краснодар";
+export const physicalAddress = "г. Краснодар, улица имени Калинина, 1Л";
+export const physicalAddressShort = "улица имени Калинина, 1Л, Краснодар";
 /** Юридический адрес ИП */
 export const legalAddress =
   "353835, РФ, Краснодарский край, Красноармейский район, хут. Протичка, ул. Дружбы, д. 29";

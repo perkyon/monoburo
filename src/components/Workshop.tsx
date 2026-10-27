@@ -53,10 +53,10 @@ export const Workshop = () => {
         </h2>
       </div>
 
-      <div className="container-page mt-8 md:mt-12 grid grid-cols-1 items-start gap-8 md:grid-cols-[0.46fr_0.54fr] md:gap-14">
+      <div className="container-page mt-8 md:mt-12 grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,0.46fr)_minmax(0,0.54fr)] md:items-stretch md:gap-14">
         <div
           ref={stageRef}
-          className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-black md:aspect-[3/4] md:rounded-[32px]"
+          className="relative h-full min-h-[420px] overflow-hidden rounded-[24px] bg-black md:rounded-[32px]"
         >
           {shouldLoad ? (
             <video
@@ -85,37 +85,28 @@ export const Workshop = () => {
           </p>
         </div>
 
-        <div className="flex flex-col justify-center md:min-h-full">
-          <p className="mb-8 max-w-[36ch] font-manrope text-[16px] leading-relaxed text-black/55 md:text-[17px]">
-            Не рендеры и не шоурум. Своё производство: каркас, пыль, срок. Приезжают
-            посмотреть — и уже отсюда решают, кому отдавать проект.
-          </p>
+        <div className="flex flex-col justify-between">
+          <div>
+            <p className="mb-8 max-w-[36ch] font-manrope text-[16px] leading-relaxed text-black/55 md:text-[17px]">
+              Не рендеры и не шоурум. Своё производство: каркас, пыль, срок. Приезжают
+              посмотреть — и уже отсюда решают, кому отдавать проект.
+            </p>
 
-          <div className="border-t border-black/10">
-            {facts.map((item) => (
-              <div key={item.index} className="flex gap-5 border-b border-black/10 py-5 md:gap-6 md:py-6">
-                <span className="font-unbounded text-[13px] text-black/30">{item.index}</span>
-                <span>
-                  <span className="block font-unbounded text-[18px] leading-snug tracking-[-0.02em] md:text-[22px]">
-                    {item.title}
+            <div className="border-t border-black/10">
+              {facts.map((item) => (
+                <div key={item.index} className="flex gap-5 border-b border-black/10 py-5 md:gap-6 md:py-6">
+                  <span className="font-unbounded text-[13px] text-black/30">{item.index}</span>
+                  <span>
+                    <span className="block font-unbounded text-[18px] leading-snug tracking-[-0.02em] md:text-[22px]">
+                      {item.title}
+                    </span>
+                    <span className="mt-2 block max-w-[34ch] font-manrope text-[14px] leading-relaxed text-black/60 md:text-[15px]">
+                      {item.text}
+                    </span>
                   </span>
-                  <span className="mt-2 block max-w-[34ch] font-manrope text-[14px] leading-relaxed text-black/60 md:text-[15px]">
-                    {item.text}
-                  </span>
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="relative mt-8 aspect-[16/10] overflow-hidden rounded-[20px] md:mt-10 md:rounded-[24px]">
-            <Image
-              src="/assets/about_workshop.jpg"
-              alt="Станок в цехе Monoburo"
-              fill
-              sizes="(max-width: 768px) 100vw, 40vw"
-              quality={90}
-              className="object-cover"
-            />
+                </div>
+              ))}
+            </div>
           </div>
 
           <button
