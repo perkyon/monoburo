@@ -8,7 +8,8 @@ import {
   contactPhone,
   contactTelegram,
   contactWhatsApp,
-  physicalAddressShort,
+  showroomAddressShort,
+  workshopAddressShort,
 } from "@/utils/site";
 
 const columns = [
@@ -16,7 +17,7 @@ const columns = [
     title: "О компании",
     items: [
       { label: "О нас", href: "#about" },
-      { label: "Цех", href: "#workshop" },
+      { label: "Цех и шоурум", href: "#workshop" },
       { label: "Проекты", href: "#projects" },
       { label: "Мероприятия", href: "#events" },
     ],
@@ -117,7 +118,9 @@ export const Footer = () => {
                   <p className="font-unbounded text-white text-[18px]">Monoburo</p>
                 </div>
                 <p className="font-unbounded text-[13px] leading-relaxed text-white/55">
-                  {physicalAddressShort}
+                  Шоурум: {showroomAddressShort}
+                  <br />
+                  Цех: {workshopAddressShort}
                   <br />
                   {contactPhone}
                 </p>

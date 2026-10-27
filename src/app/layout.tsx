@@ -146,7 +146,7 @@ export default function RootLayout({
     description: siteDescription,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "улица имени Калинина, 1Л",
+      streetAddress: "Дальний проезд, 11к1, этаж 2",
       addressLocality: "Краснодар",
       addressRegion: "Краснодарский край",
       addressCountry: "RU",
@@ -198,7 +198,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Manrope:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
         <link rel="icon" href="/favicon.ico" sizes="48x48" />

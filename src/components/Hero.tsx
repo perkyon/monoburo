@@ -8,7 +8,7 @@ import { Magnetic } from "@/components/Magnetic";
 
 const navLinks = [
   { href: "#about", label: "О нас" },
-  { href: "#workshop", label: "Цех" },
+  { href: "#workshop", label: "Цех и шоурум" },
   { href: "#projects", label: "Проекты" },
   { href: "#events", label: "Мероприятия" },
   { href: "#contacts", label: "Контакты" },

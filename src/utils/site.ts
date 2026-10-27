@@ -16,9 +16,17 @@ export const contactWhatsAppDisplay = "+7 (918) 136-55-58";
 /** Диалог с пользователем Telegram */
 export const contactTelegram = "https://t.me/RusRus0808";
 export const contactTelegramHandle = "@RusRus0808";
-/** Физический адрес (офис/шоурум) */
-export const physicalAddress = "г. Краснодар, улица имени Калинина, 1Л";
-export const physicalAddressShort = "улица имени Калинина, 1Л, Краснодар";
+/** Шоурум — Галерея Фестиваль */
+export const showroomAddress = "г. Краснодар, Дальний проезд, 11к1, этаж 2";
+export const showroomAddressShort = "Дальний проезд, 11к1, этаж 2";
+export const showroomPlace = "Галерея Фестиваль";
+export const showroomMapUrl = "https://yandex.ru/maps/-/CXbbENZ8";
+/** Цех */
+export const workshopAddress = "г. Краснодар, улица имени Калинина, 1Л";
+export const workshopAddressShort = "улица имени Калинина, 1Л, Краснодар";
+/** Публичный адрес для футера и схемы — шоурум */
+export const physicalAddress = showroomAddress;
+export const physicalAddressShort = "Дальний проезд, 11к1, Краснодар";
 /** Юридический адрес ИП */
 export const legalAddress =
   "353835, РФ, Краснодарский край, Красноармейский район, хут. Протичка, ул. Дружбы, д. 29";
