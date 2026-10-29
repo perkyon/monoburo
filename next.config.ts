@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.monoburo.com" }],
+        destination: "https://monoburo.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     formats: ["image/webp"],
     qualities: [75, 90],
