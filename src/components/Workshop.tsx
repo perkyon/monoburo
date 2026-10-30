@@ -119,7 +119,7 @@ export const Workshop = () => {
               className={`absolute inset-0 size-full object-cover transition-opacity duration-300 ${
                 isWorkshop ? "opacity-100" : "pointer-events-none opacity-0"
               }`}
-              src="/assets/workshop-loop.mp4"
+              src="/assets/workshop-loop.mp4?v=2"
               poster="/assets/workshop-poster.jpg"
               muted
               loop

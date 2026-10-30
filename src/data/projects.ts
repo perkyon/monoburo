@@ -7,12 +7,20 @@ export const CATEGORIES: { id: ProjectCategory | "all"; label: string }[] = [
   { id: "interior", label: "Предметы" },
 ];
 
+export const COMING_SOON_CATEGORIES: ProjectCategory[] = ["home"];
+
+export function isComingSoon(category?: ProjectCategory) {
+  return Boolean(category && COMING_SOON_CATEGORIES.includes(category));
+}
+
 export const FEATURED_IDS = ["surf", "label", "tom-sawyer"] as const;
 export const PREVIEW_COUNT = 3;
 
 export function projectsForFilter(filter: ProjectCategory | "all"): Project[] {
   const pool =
-    filter === "all" ? allProjects : allProjects.filter((project) => project.category === filter);
+    filter === "all"
+      ? allProjects.filter((project) => !isComingSoon(project.category))
+      : allProjects.filter((project) => project.category === filter);
 
   const featured = FEATURED_IDS.map((id) => pool.find((project) => project.id === id)).filter(
     (project): project is Project => Boolean(project)
@@ -691,6 +699,11 @@ export const allProjects: Project[] = [
 
 export function relatedProjects(project: Project, limit = 2): Project[] {
   return allProjects
-    .filter((item) => item.id !== project.id && item.category === project.category)
+    .filter(
+      (item) =>
+        item.id !== project.id &&
+        item.category === project.category &&
+        !isComingSoon(item.category)
+    )
     .slice(0, limit);
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { RequestModal } from "@/components/RequestModal";
 import { Magnetic } from "@/components/Magnetic";
 import {
@@ -78,19 +79,26 @@ export const Footer = () => {
       <div className="container-page pb-6 md:pb-10">
         <div className="relative overflow-hidden rounded-[28px] md:rounded-[40px] bg-black">
           <div ref={stageRef} className="relative h-[360px] md:h-[640px] bg-[#111]">
+            <Image
+              src="/assets/footer-poster.jpg"
+              alt=""
+              fill
+              sizes="100vw"
+              quality={75}
+              className="object-cover opacity-80"
+            />
             {shouldLoad ? (
               <video
                 ref={videoRef}
                 className="absolute inset-0 size-full object-cover opacity-80"
-                src="/assets/monoburo-footer-bg.mp4"
+                src="/assets/monoburo-footer-bg.mp4?v=2"
+                poster="/assets/footer-poster.jpg"
                 muted
                 loop
                 playsInline
                 preload="none"
               />
-            ) : (
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,#2a2a2a,transparent_55%),linear-gradient(180deg,#171717,black)]" />
-            )}
+            ) : null}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-4 px-6 pb-8 md:pb-12">
               <p className="font-unbounded text-[22px] md:text-[36px] text-white text-center text-balance max-w-[18ch] md:max-w-none">

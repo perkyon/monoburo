@@ -7,6 +7,7 @@ import { LazyFrame } from "@/components/LazyFrame";
 import {
   CATEGORIES,
   PREVIEW_COUNT,
+  isComingSoon,
   projectsForFilter,
   relatedProjects,
 } from "@/data/projects";
@@ -17,6 +18,7 @@ export const Projects = () => {
   const [expanded, setExpanded] = useState(false);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
 
+  const comingSoon = isComingSoon(filter === "all" ? undefined : filter);
   const ordered = useMemo(() => projectsForFilter(filter), [filter]);
   const visible = expanded ? ordered : ordered.slice(0, PREVIEW_COUNT);
   const hiddenCount = Math.max(0, ordered.length - PREVIEW_COUNT);
@@ -49,6 +51,11 @@ export const Projects = () => {
                 }`}
               >
                 {cat.label}
+                {isComingSoon(cat.id === "all" ? undefined : cat.id) ? (
+                  <span className={`ml-2 text-[10px] tracking-[0.12em] ${active ? "text-white/45" : "text-black/35"}`}>
+                    скоро
+                  </span>
+                ) : null}
               </button>
             );
           })}
@@ -56,25 +63,34 @@ export const Projects = () => {
       </div>
 
       <div className="container-page">
-        {visible.map((project, index) => (
-          <CaseRow
-            key={project.id}
-            project={project}
-            index={index}
-            onOpen={() => setActiveProject(project)}
-          />
-        ))}
+        {comingSoon ? (
+          <ComingSoonHome />
+        ) : (
+          <>
+            {visible.map((project, index) => (
+              <CaseRow
+                key={project.id}
+                project={project}
+                index={index}
+                onOpen={() => {
+                  if (isComingSoon(project.category)) return;
+                  setActiveProject(project);
+                }}
+              />
+            ))}
 
-        {hiddenCount > 0 && (
-          <div className="border-t border-black/8 py-8 md:py-10">
-            <button
-              type="button"
-              onClick={() => setExpanded((value) => !value)}
-              className="flex h-12 items-center rounded-full border border-black/12 px-6 font-unbounded text-[12px] uppercase tracking-[0.16em] text-black/70 transition hover:border-black hover:text-black"
-            >
-              {expanded ? "Свернуть" : `Раскрыть все проекты · ещё ${hiddenCount}`}
-            </button>
-          </div>
+            {hiddenCount > 0 && (
+              <div className="border-t border-black/8 py-8 md:py-10">
+                <button
+                  type="button"
+                  onClick={() => setExpanded((value) => !value)}
+                  className="flex h-12 items-center rounded-full border border-black/12 px-6 font-unbounded text-[12px] uppercase tracking-[0.16em] text-black/70 transition hover:border-black hover:text-black"
+                >
+                  {expanded ? "Свернуть" : `Раскрыть все проекты · ещё ${hiddenCount}`}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -89,6 +105,22 @@ export const Projects = () => {
     </section>
   );
 };
+
+function ComingSoonHome() {
+  return (
+    <div className="relative overflow-hidden rounded-[28px] border border-black/8 bg-[#0a0a0a] px-6 py-16 text-white md:rounded-[36px] md:px-14 md:py-24">
+      <p className="font-unbounded text-[11px] uppercase tracking-[0.2em] text-white/40">
+        Дом · скоро
+      </p>
+      <h3 className="mt-4 max-w-[14ch] font-unbounded text-[32px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[52px]">
+        Жилые кейсы ещё собираем.
+      </h3>
+      <p className="mt-5 max-w-[36ch] font-manrope text-[15px] leading-relaxed text-white/55 md:text-[16px]">
+        Пока этот раздел в работе — открыть его нельзя. HoReCa и предметы уже можно смотреть.
+      </p>
+    </div>
+  );
+}
 
 function CaseRow({
   project,
