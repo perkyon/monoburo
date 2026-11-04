@@ -1,7 +1,8 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { trackGoal, type Goal } from "@/utils/analytics";
 import {
   contactEmail,
   contactTelegram,
@@ -12,9 +13,14 @@ import {
 
 type RequestModalProps = {
   onClose: () => void;
+  source: string;
 };
 
-export const RequestModal = ({ onClose }: RequestModalProps) => {
+export const RequestModal = ({ onClose, source }: RequestModalProps) => {
+  useEffect(() => {
+    trackGoal("request_open", { from: source });
+  }, [source]);
+
   useLayoutEffect(() => {
     const html = document.documentElement;
     const originalHtmlOverflow = html.style.overflow;
@@ -41,11 +47,14 @@ export const RequestModal = ({ onClose }: RequestModalProps) => {
   }, []);
   const [isConsented, setIsConsented] = useState(false);
 
-  const handleContactClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!isConsented) {
-      event.preventDefault();
-    }
-  };
+  const handleContactClick =
+    (goal: Goal) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+      if (!isConsented) {
+        event.preventDefault();
+        return;
+      }
+      trackGoal(goal, { from: source });
+    };
 
   if (typeof document === "undefined") {
     return null;
@@ -74,7 +83,7 @@ export const RequestModal = ({ onClose }: RequestModalProps) => {
             href={contactTelegram}
             target="_blank"
             rel="noreferrer"
-            onClick={handleContactClick}
+            onClick={handleContactClick("contact_telegram")}
             aria-disabled={!isConsented}
             className={`flex items-center gap-4 rounded-[14px] bg-[#0A84C6] p-4 text-white shadow-[0_10px_20px_rgba(10,132,198,0.25)] transition-transform duration-200 ${isConsented ? "hover:-translate-y-[2px] hover:shadow-[0_14px_28px_rgba(10,132,198,0.35)]" : "cursor-not-allowed"}`}
           >
@@ -94,7 +103,7 @@ export const RequestModal = ({ onClose }: RequestModalProps) => {
             href={`https://wa.me/${contactWhatsApp}`}
             target="_blank"
             rel="noreferrer"
-            onClick={handleContactClick}
+            onClick={handleContactClick("contact_whatsapp")}
             aria-disabled={!isConsented}
             className={`flex items-center gap-4 rounded-[14px] bg-[#22C55E] p-4 text-white shadow-[0_10px_20px_rgba(34,197,94,0.25)] transition-transform duration-200 ${isConsented ? "hover:-translate-y-[2px] hover:shadow-[0_14px_28px_rgba(34,197,94,0.35)]" : "cursor-not-allowed"}`}
           >
@@ -112,7 +121,7 @@ export const RequestModal = ({ onClose }: RequestModalProps) => {
 
           <a
             href={`mailto:${contactEmail}`}
-            onClick={handleContactClick}
+            onClick={handleContactClick("contact_email")}
             aria-disabled={!isConsented}
             className={`flex items-center gap-4 rounded-[14px] bg-[#141414] p-4 text-white shadow-[0_10px_20px_rgba(0,0,0,0.3)] transition-transform duration-200 ${isConsented ? "hover:-translate-y-[2px] hover:shadow-[0_14px_28px_rgba(0,0,0,0.4)]" : "cursor-not-allowed"}`}
           >

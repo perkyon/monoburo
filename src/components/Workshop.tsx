@@ -218,7 +218,9 @@ export const Workshop = () => {
         </div>
       </div>
 
-      {isRequestOpen && <RequestModal onClose={() => setIsRequestOpen(false)} />}
+      {isRequestOpen && (
+        <RequestModal source={place.id} onClose={() => setIsRequestOpen(false)} />
+      )}
     </section>
   );
 };

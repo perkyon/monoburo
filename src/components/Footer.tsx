@@ -4,16 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { RequestModal } from "@/components/RequestModal";
 import { Magnetic } from "@/components/Magnetic";
+import { trackGoal, type Goal } from "@/utils/analytics";
 import {
   contactEmail,
   contactPhone,
+  contactPhoneRaw,
   contactTelegram,
   contactWhatsApp,
   showroomAddressShort,
   workshopAddressShort,
 } from "@/utils/site";
 
-const columns = [
+type FooterLink = { label: string; href: string; goal?: Goal };
+
+const columns: { title: string; items: FooterLink[] }[] = [
   {
     title: "О компании",
     items: [
@@ -26,9 +30,9 @@ const columns = [
   {
     title: "Связь",
     items: [
-      { label: "Telegram", href: contactTelegram },
-      { label: "WhatsApp", href: `https://wa.me/${contactWhatsApp}` },
-      { label: contactEmail, href: `mailto:${contactEmail}` },
+      { label: "Telegram", href: contactTelegram, goal: "contact_telegram" },
+      { label: "WhatsApp", href: `https://wa.me/${contactWhatsApp}`, goal: "contact_whatsapp" },
+      { label: contactEmail, href: `mailto:${contactEmail}`, goal: "contact_email" },
     ],
   },
   {
@@ -38,7 +42,7 @@ const columns = [
       { label: "Политика конфиденциальности", href: "/privacy-policy" },
     ],
   },
-] as const;
+];
 
 export const Footer = () => {
   const [isRequestOpen, setIsRequestOpen] = useState(false);
@@ -130,7 +134,13 @@ export const Footer = () => {
                   <br />
                   Цех: {workshopAddressShort}
                   <br />
-                  {contactPhone}
+                  <a
+                    href={`tel:${contactPhoneRaw.replace(/-/g, "")}`}
+                    onClick={() => trackGoal("contact_phone", { from: "footer" })}
+                    className="transition-colors hover:text-white"
+                  >
+                    {contactPhone}
+                  </a>
                 </p>
               </div>
 
@@ -141,16 +151,17 @@ export const Footer = () => {
                       {column.title}
                     </p>
                     <div className="flex flex-col gap-2">
-                      {column.items.map((item) => (
+                      {column.items.map(({ label, href, goal }) => (
                         <a
-                          key={item.href + item.label}
-                          href={item.href}
+                          key={href + label}
+                          href={href}
                           className="font-unbounded hover:text-white transition-colors"
-                          {...(item.href.startsWith("http") || item.href.startsWith("mailto")
+                          onClick={goal ? () => trackGoal(goal, { from: "footer" }) : undefined}
+                          {...(href.startsWith("http") || href.startsWith("mailto")
                             ? { target: "_blank", rel: "noreferrer" }
                             : {})}
                         >
-                          {item.label}
+                          {label}
                         </a>
                       ))}
                     </div>
@@ -166,7 +177,7 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-      {isRequestOpen && <RequestModal onClose={() => setIsRequestOpen(false)} />}
+      {isRequestOpen && <RequestModal source="footer" onClose={() => setIsRequestOpen(false)} />}
     </footer>
   );
 };

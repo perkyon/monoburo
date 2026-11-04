@@ -157,7 +157,7 @@ export const Events = () => {
         </div>
       </div>
 
-      {isRequestOpen && <RequestModal onClose={() => setIsRequestOpen(false)} />}
+      {isRequestOpen && <RequestModal source="breakfast" onClose={() => setIsRequestOpen(false)} />}
     </section>
   );
 };

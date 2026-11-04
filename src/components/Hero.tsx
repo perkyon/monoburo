@@ -142,7 +142,7 @@ export const Hero = () => {
         </div>
       </div>
 
-      {isRequestOpen && <RequestModal onClose={() => setIsRequestOpen(false)} />}
+      {isRequestOpen && <RequestModal source="hero" onClose={() => setIsRequestOpen(false)} />}
     </section>
   );
 };
