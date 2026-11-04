@@ -185,18 +185,6 @@ export const RequestModal = ({ onClose, source }: RequestModalProps) => {
             </a>
           ))}
         </div>
-
-        <p className="mt-6 border-t border-black/10 pt-4 font-unbounded t-caption text-black/50">
-          Связываясь с нами, вы соглашаетесь с{" "}
-          <a href="/user-agreement" className="text-black/70 underline underline-offset-2 hover:text-black">
-            Пользовательским соглашением
-          </a>{" "}
-          и{" "}
-          <a href="/privacy-policy" className="text-black/70 underline underline-offset-2 hover:text-black">
-            Политикой конфиденциальности
-          </a>
-          .
-        </p>
       </div>
     </div>,
     document.body
