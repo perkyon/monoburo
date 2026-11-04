@@ -12,7 +12,7 @@ export const contactEmail = "a.matcyp@mail.ru";
 export const contactPhone = "+7 (918) 136-55-58";
 export const contactPhoneRaw = "+7-918-136-55-58";
 export const contactPhoneTel = "+79181365558";
-export const designerCommission = "5%";
+export const designerCommission = "20%";
 export const contactWhatsApp = "79181365558";
 export const contactWhatsAppDisplay = "+7 (918) 136-55-58";
 /** Диалог с пользователем Telegram */
