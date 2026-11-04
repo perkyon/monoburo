@@ -8,6 +8,7 @@ import {
   CATEGORIES,
   PREVIEW_COUNT,
   isComingSoon,
+  projectPath,
   projectsForFilter,
   relatedProjects,
 } from "@/data/projects";
@@ -72,10 +73,7 @@ export const Projects = () => {
                 key={project.id}
                 project={project}
                 index={index}
-                onOpen={() => {
-                  if (isComingSoon(project.category)) return;
-                  setActiveProject(project);
-                }}
+                onOpen={() => setActiveProject(project)}
               />
             ))}
 
@@ -135,9 +133,15 @@ function CaseRow({
   const stats = project.stats ?? [];
 
   return (
-    <button
-      type="button"
-      onClick={onOpen}
+    <a
+      href={projectPath(project)}
+      onClick={(event) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+          return;
+        }
+        event.preventDefault();
+        onOpen();
+      }}
       className="group grid w-full grid-cols-1 items-center gap-8 border-t border-black/8 py-10 text-left last:border-b md:grid-cols-[0.92fr_1.18fr] md:gap-12 md:py-16"
     >
       <div>
@@ -188,6 +192,6 @@ function CaseRow({
           />
         </div>
       </div>
-    </button>
+    </a>
   );
 }

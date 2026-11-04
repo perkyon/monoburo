@@ -8,7 +8,7 @@ import { trackGoal, type Goal } from "@/utils/analytics";
 import {
   contactEmail,
   contactPhone,
-  contactPhoneRaw,
+  contactPhoneTel,
   contactTelegram,
   contactWhatsApp,
   showroomAddressShort,
@@ -21,10 +21,18 @@ const columns: { title: string; items: FooterLink[] }[] = [
   {
     title: "О компании",
     items: [
-      { label: "О нас", href: "#about" },
-      { label: "Цех и шоурум", href: "#workshop" },
-      { label: "Проекты", href: "#projects" },
-      { label: "Мероприятия", href: "#events" },
+      { label: "О нас", href: "/#about" },
+      { label: "Цех и шоурум", href: "/#workshop" },
+      { label: "Проекты", href: "/#projects" },
+      { label: "Мероприятия", href: "/#events" },
+    ],
+  },
+  {
+    title: "Направления",
+    items: [
+      { label: "Мебель для HoReCa", href: "/horeca" },
+      { label: "Предметы", href: "/predmety" },
+      { label: "Дизайнерам", href: "/designers" },
     ],
   },
   {
@@ -135,7 +143,7 @@ export const Footer = () => {
                   Цех: {workshopAddressShort}
                   <br />
                   <a
-                    href={`tel:${contactPhoneRaw.replace(/-/g, "")}`}
+                    href={`tel:${contactPhoneTel}`}
                     onClick={() => trackGoal("contact_phone", { from: "footer" })}
                     className="transition-colors hover:text-white"
                   >

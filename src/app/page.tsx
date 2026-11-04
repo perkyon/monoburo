@@ -3,8 +3,10 @@ import { About } from "@/components/About";
 import { Workshop } from "@/components/Workshop";
 import { Projects } from "@/components/Projects";
 import { Events } from "@/components/Events";
+import { Designers } from "@/components/Designers";
 import { Footer } from "@/components/Footer";
 import { Reveal } from "@/components/Reveal";
+import { StickyContact } from "@/components/StickyContact";
 
 export default function Home() {
   return (
@@ -21,8 +23,12 @@ export default function Home() {
         <Events />
       </Reveal>
       <Reveal>
+        <Designers />
+      </Reveal>
+      <Reveal>
         <Footer />
       </Reveal>
+      <StickyContact />
     </main>
   );
 }

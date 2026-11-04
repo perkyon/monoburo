@@ -1,21 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const STORAGE_KEY = "monoburo-wip-dismissed";
 
-export const WipBanner = () => {
-  const [visible, setVisible] = useState(false);
+const subscribe = () => () => {};
 
-  useEffect(() => {
-    try {
-      if (sessionStorage.getItem(STORAGE_KEY)) return;
-    } catch {
-      // ignore
-    }
-    setVisible(true);
-  }, []);
+function readDismissed() {
+  try {
+    return Boolean(sessionStorage.getItem(STORAGE_KEY));
+  } catch {
+    return false;
+  }
+}
+
+export const WipBanner = () => {
+  const dismissedEarlier = useSyncExternalStore(subscribe, readDismissed, () => true);
+  const [closed, setClosed] = useState(false);
+  const visible = !dismissedEarlier && !closed;
 
   const dismiss = () => {
     try {
@@ -23,7 +26,7 @@ export const WipBanner = () => {
     } catch {
       // ignore
     }
-    setVisible(false);
+    setClosed(true);
   };
 
   return (
@@ -34,7 +37,7 @@ export const WipBanner = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-4 left-4 z-[70] w-[min(calc(100vw-32px),320px)] rounded-[22px] bg-[#0a0a0a] p-4 text-white shadow-[0_18px_40px_rgba(0,0,0,0.28)] md:bottom-6 md:left-6 md:p-5"
+          className="wip-banner fixed bottom-4 left-4 z-[70] w-[min(calc(100vw-32px),320px)] rounded-[22px] bg-[#0a0a0a] p-4 text-white shadow-[0_18px_40px_rgba(0,0,0,0.28)] md:bottom-6 md:left-6 md:p-5"
         >
           <div className="flex items-start justify-between gap-3">
             <p className="font-unbounded text-[10px] uppercase tracking-[0.2em] text-white/45">

@@ -121,7 +121,7 @@ export default function RootLayout({
       name: "Мебель для HoReCa",
       description:
         "Разработка и производство мебели под заказ для кафе, ресторанов, баров и кофеен: залы, барные зоны, посадка, стойки выдачи и ожидания.",
-      url: `${siteUrl}#projects`,
+      url: `${siteUrl}/horeca`,
     },
     {
       name: "Офисная мебель",
@@ -240,7 +240,7 @@ export default function RootLayout({
                   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
               })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=107082729', 'ym');
 
-              ym(107082729, 'init', {ssr:true, webvisor:false, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+              ym(107082729, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
             `,
           }}
         />

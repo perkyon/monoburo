@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { pauseLenis, resumeLenis } from "@/components/SmoothScroll";
-import { LazyFrame } from "@/components/LazyFrame";
-import { getProjectTheme, type ProjectTheme } from "@/utils/projectThemes";
+import { ProjectArticle } from "@/components/ProjectArticle";
+import { projectPath } from "@/data/projects";
+import { trackPageview } from "@/utils/analytics";
+import type { ProjectTheme } from "@/utils/projectThemes";
 
 export type ProjectCategory = "home" | "horeca" | "interior";
 
@@ -42,14 +43,6 @@ export type Project = {
   };
 };
 
-function splitCopy(value?: string) {
-  if (!value) return [];
-  return value
-    .split(/\n\n+/)
-    .map((part) => part.trim())
-    .filter(Boolean);
-}
-
 type ProjectModalProps = {
   project: Project;
   onClose: () => void;
@@ -63,20 +56,13 @@ export const ProjectModal = ({
   related = [],
   onOpenRelated,
 }: ProjectModalProps) => {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const touchStartX = useRef<number>(0);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const SWIPE_THRESHOLD = 50;
-  const theme = getProjectTheme(project);
-  const gallery = project.gallery?.length ? project.gallery : [project.image];
-  const goals =
-    project.details?.goals ??
-    (project.details?.highlights ?? []).map((title) => ({ title, text: "" }));
-  const stats = project.stats ?? [];
-  const storyParts = splitCopy(project.details?.story);
-  const processParts = splitCopy(project.details?.process);
-  const challengeParts = splitCopy(project.details?.challenges);
-  const resultParts = splitCopy(project.details?.result);
+  const pushedRef = useRef(false);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -105,30 +91,45 @@ export const ProjectModal = ({
   }, []);
 
   useEffect(() => {
-    setActiveIndex(null);
+    const path = projectPath(project);
+    if (!pushedRef.current) {
+      window.history.pushState(null, "", path);
+      pushedRef.current = true;
+    } else if (window.location.pathname !== path) {
+      window.history.replaceState(null, "", path);
+    }
+    const previousTitle = document.title;
+    document.title = `${project.name} — monoburo`;
+    trackPageview(path, project.name);
     scrollRef.current?.scrollTo({ top: 0 });
-  }, [project.id]);
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [project]);
+
+  useEffect(() => {
+    const onPopState = () => {
+      if (!window.location.pathname.startsWith("/projects/")) onCloseRef.current();
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  const requestClose = useCallback(() => {
+    if (pushedRef.current && window.location.pathname.startsWith("/projects/")) {
+      window.history.back();
+    } else {
+      onCloseRef.current();
+    }
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        if (activeIndex !== null) setActiveIndex(null);
-        else onClose();
-        return;
-      }
-      if (activeIndex === null) return;
-      if (event.key === "ArrowRight") {
-        setActiveIndex((prev) => (prev === null ? 0 : (prev + 1) % gallery.length));
-      }
-      if (event.key === "ArrowLeft") {
-        setActiveIndex((prev) =>
-          prev === null ? 0 : (prev - 1 + gallery.length) % gallery.length
-        );
-      }
+      if (event.key === "Escape") requestClose();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeIndex, gallery.length, onClose]);
+  }, [requestClose]);
 
   if (typeof document === "undefined") return null;
 
@@ -145,353 +146,19 @@ export const ProjectModal = ({
       <button
         type="button"
         aria-label="Закрыть"
-        onClick={onClose}
+        onClick={requestClose}
         className="fixed right-4 top-4 z-[1020] flex size-11 items-center justify-center rounded-full border border-white/20 bg-black/40 font-unbounded text-[22px] leading-none text-white backdrop-blur-md transition hover:bg-black/65 md:right-6 md:top-6"
       >
         ×
       </button>
 
-      <article>
-        <header className="relative min-h-[72svh] overflow-hidden bg-[var(--background)] text-white md:min-h-[78svh]">
-          <div
-            className="absolute inset-0 origin-bottom"
-            style={{ clipPath: "polygon(0 0, 100% 0, 100% 78%, 0 100%)" }}
-          >
-            <Image
-              src={project.image}
-              alt={project.name}
-              fill
-              priority
-              quality={90}
-              sizes="100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-black/35" />
-            <div className="absolute inset-0" style={{ background: theme.heroOverlay }} />
-          </div>
-
-          <div className="relative z-10 flex min-h-[72svh] flex-col justify-end px-5 pb-[18%] pt-24 md:min-h-[78svh] md:px-12 md:pb-[14%] lg:px-20">
-            <p className="mb-5 font-unbounded text-[12px] uppercase tracking-[0.28em] text-white/70">
-              {project.name}
-            </p>
-            <h2 className="max-w-[18ch] font-unbounded text-[32px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[52px] lg:text-[60px]">
-              {project.details?.lead ?? project.name}
-            </h2>
-          </div>
-        </header>
-
-        <div className="grid grid-cols-1 gap-8 px-5 py-10 md:grid-cols-2 md:gap-16 md:px-12 md:py-16 lg:px-20">
-          <div>
-            <p className="font-unbounded text-[40px] font-medium leading-none tracking-[-0.04em] md:text-[56px]">
-              {project.year ?? "—"}
-            </p>
-            {project.tags && project.tags.length > 0 && (
-              <p className="mt-6 max-w-[28ch] font-unbounded text-[12px] uppercase tracking-[0.14em] text-black/40">
-                {project.tags.join("  ·  ")}
-              </p>
-            )}
-          </div>
-          <div>
-            <p className="font-unbounded text-[32px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[48px]">
-              {project.name}
-            </p>
-            {project.location && (
-              <p className="mt-3 font-manrope text-[15px] text-black/45">{project.location}</p>
-            )}
-            {project.details?.brief && (
-              <p className="mt-6 max-w-[46ch] font-unbounded text-[18px] leading-[1.4] tracking-[-0.02em] md:text-[20px]">
-                {project.details.brief}
-              </p>
-            )}
-            <div className="mt-6 max-w-[46ch] space-y-4">
-              {storyParts.length > 0 ? (
-                storyParts.map((part) => (
-                  <p
-                    key={part.slice(0, 24)}
-                    className="font-manrope text-[16px] leading-[1.7] text-black/70 md:text-[17px]"
-                  >
-                    {part}
-                  </p>
-                ))
-              ) : (
-                <p className="font-manrope text-[16px] leading-[1.7] text-black/70 md:text-[17px]">
-                  Подробности проекта — по запросу.
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {goals.length > 0 && (
-          <div className="px-5 py-4 md:px-12 lg:px-20">
-            <p className="mb-8 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
-              Цели и задачи
-            </p>
-            <ol className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-x-16 md:gap-y-12">
-              {goals.map((item, i) => (
-                <li key={item.title} className="flex gap-5">
-                  <span className="font-unbounded text-[13px] text-black/30">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span>
-                    <span className="block font-unbounded text-[18px] leading-snug tracking-[-0.02em] md:text-[22px]">
-                      {item.title}
-                    </span>
-                    {item.text ? (
-                      <span className="mt-2 block font-manrope text-[15px] leading-relaxed text-black/60 md:text-[16px]">
-                        {item.text}
-                      </span>
-                    ) : null}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-
-        <div className="mt-10 px-5 md:mt-16 md:px-12 lg:px-20">
-          <button
-            type="button"
-            onClick={() => setActiveIndex(0)}
-            className="relative aspect-[16/9] w-full overflow-hidden"
-            aria-label="Фото 1"
-          >
-            <LazyFrame
-              src={gallery[0]}
-              alt={project.name}
-              sizes="100vw"
-              priority
-              quality={90}
-            />
-          </button>
-        </div>
-
-        {processParts.length > 0 && (
-          <div className="px-5 py-12 md:px-12 md:py-16 lg:px-20">
-            <p className="mb-6 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
-              Решение
-            </p>
-            <div className="max-w-[62ch] space-y-4">
-              {processParts.map((part) => (
-                <p
-                  key={part.slice(0, 24)}
-                  className="font-manrope text-[16px] leading-[1.7] text-black/70 md:text-[18px]"
-                >
-                  {part}
-                </p>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {gallery.length > 1 && (
-          <div className="px-5 md:px-12 lg:px-20">
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
-              {gallery.slice(1).map((src, index) => (
-                <button
-                  key={`${project.id}-${src}-${index + 1}`}
-                  type="button"
-                  onClick={() => setActiveIndex(index + 1)}
-                  className="relative aspect-[4/3] w-full overflow-hidden"
-                  aria-label={`Фото ${index + 2}`}
-                >
-                  <LazyFrame
-                    src={src}
-                    alt={`${project.name} — ${index + 2}`}
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    quality={90}
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-8 px-5 py-12 md:grid-cols-4 md:gap-10 md:px-12 md:py-20 lg:px-20">
-          {stats.map((stat) => (
-            <div key={`${stat.value}-${stat.label}`}>
-              <p className="font-unbounded text-[40px] font-medium leading-none tracking-[-0.04em] md:text-[52px]">
-                {stat.value}
-              </p>
-              <p className="mt-2 max-w-[14ch] font-manrope text-[13px] leading-snug text-black/45">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-          {project.details?.materials && (
-            <div>
-              <p className="font-unbounded text-[13px] uppercase tracking-[0.16em] text-black/35">
-                Материалы
-              </p>
-              <p className="mt-2 font-manrope text-[15px] leading-relaxed text-black/75">
-                {project.details.materials}
-              </p>
-            </div>
-          )}
-        </div>
-
-        {challengeParts.length > 0 && challengeParts[0] !== "—" && (
-          <div className="px-5 pb-4 md:px-12 lg:px-20">
-            <div className="border-t border-black/10 py-10 md:py-14">
-              <p className="mb-4 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
-                Сложности
-              </p>
-              <div className="max-w-[62ch] space-y-4">
-                {challengeParts.map((part) => (
-                  <p
-                    key={part.slice(0, 24)}
-                    className="font-manrope text-[16px] leading-[1.7] text-black/70 md:text-[17px]"
-                  >
-                    {part}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="px-5 pb-8 md:px-12 lg:px-20">
-          <div className="border-t border-black/10 pt-10 md:pt-14">
-            <p className="mb-4 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
-              Результат
-            </p>
-            <div className="max-w-[46ch] space-y-4">
-              {resultParts.length > 0 ? (
-                resultParts.map((part, index) => (
-                  <p
-                    key={part.slice(0, 24)}
-                    className={
-                      index === 0
-                        ? "font-unbounded text-[22px] leading-[1.3] tracking-[-0.02em] md:text-[28px]"
-                        : "font-manrope text-[16px] leading-[1.7] text-black/65 md:text-[17px]"
-                    }
-                  >
-                    {part}
-                  </p>
-                ))
-              ) : (
-                <p className="font-unbounded text-[22px] leading-[1.3] md:text-[28px]">
-                  Результат — по запросу.
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {related.length > 0 && (
-          <div className="mt-8 border-t border-black/8 px-5 py-12 md:px-12 md:py-16 lg:px-20">
-            <p className="mb-8 font-unbounded text-[11px] uppercase tracking-[0.2em] text-black/40">
-              Ещё кейсы
-            </p>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
-              {related.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => onOpenRelated?.(item)}
-                  className="group text-left"
-                >
-                  <div className="relative mb-4 aspect-[16/10] overflow-hidden rounded-[20px]">
-                    <LazyFrame
-                      src={item.image}
-                      alt={item.name}
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      quality={90}
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                    />
-                  </div>
-                  <p className="font-unbounded text-[12px] uppercase tracking-[0.16em] text-black/40">
-                    {item.kind ?? "Проект"}
-                  </p>
-                  <p className="mt-1 font-unbounded text-[22px] tracking-[-0.03em]">{item.name}</p>
-                  <p className="mt-1 font-manrope text-[14px] text-black/50">
-                    {item.details?.lead}
-                  </p>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="px-5 pb-16 md:px-12 md:pb-24 lg:px-20">
-          <button
-            type="button"
-            onClick={onClose}
-            className="font-unbounded text-[13px] uppercase tracking-[0.18em] text-black/40 transition hover:text-black"
-          >
-            ← Все кейсы
-          </button>
-        </div>
-      </article>
-
-      {activeIndex !== null && (
-        <div
-          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/88"
-          onClick={() => setActiveIndex(null)}
-        >
-          <div
-            className="relative max-h-[90vh] max-w-[90vw]"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              aria-label="Закрыть фото"
-              onClick={() => setActiveIndex(null)}
-              className="absolute -right-3 -top-3 z-10 flex size-9 items-center justify-center rounded-full bg-white text-black"
-            >
-              ×
-            </button>
-            <button
-              type="button"
-              aria-label="Предыдущее"
-              onClick={() =>
-                setActiveIndex((prev) =>
-                  prev === null ? 0 : (prev - 1 + gallery.length) % gallery.length
-                )
-              }
-              className="absolute left-3 top-1/2 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-black md:flex"
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              aria-label="Следующее"
-              onClick={() =>
-                setActiveIndex((prev) => (prev === null ? 0 : (prev + 1) % gallery.length))
-              }
-              className="absolute right-3 top-1/2 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-black md:flex"
-            >
-              ›
-            </button>
-            <div
-              className="relative h-[80vh] w-[80vw] overflow-hidden"
-              onTouchStart={(e) => {
-                touchStartX.current = e.touches[0].clientX;
-              }}
-              onTouchEnd={(e) => {
-                const delta = e.changedTouches[0].clientX - touchStartX.current;
-                if (Math.abs(delta) < SWIPE_THRESHOLD) return;
-                if (delta > 0) {
-                  setActiveIndex((prev) =>
-                    prev === null ? 0 : (prev - 1 + gallery.length) % gallery.length
-                  );
-                } else {
-                  setActiveIndex((prev) => (prev === null ? 0 : (prev + 1) % gallery.length));
-                }
-              }}
-            >
-              <Image
-                src={gallery[activeIndex]}
-                alt={project.name}
-                fill
-                sizes="80vw"
-                quality={90}
-                className="object-contain"
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      <ProjectArticle
+        key={project.id}
+        project={project}
+        related={related}
+        onOpenRelated={onOpenRelated}
+        onBack={requestClose}
+      />
     </motion.div>,
     document.body
   );

@@ -697,6 +697,16 @@ export const allProjects: Project[] = [
   },
 ];
 
+export const publicProjects = allProjects.filter((project) => !isComingSoon(project.category));
+
+export function projectPath(project: Project) {
+  return `/projects/${project.id}`;
+}
+
+export function getPublicProject(id: string) {
+  return publicProjects.find((project) => String(project.id) === id);
+}
+
 export function relatedProjects(project: Project, limit = 2): Project[] {
   return allProjects
     .filter(

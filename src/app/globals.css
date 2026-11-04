@@ -52,6 +52,21 @@ body.modal-open {
   overflow: hidden;
 }
 
+body.modal-open .sticky-cta {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wip-banner {
+  transition: bottom 0.3s ease;
+}
+
+@media (max-width: 767px) {
+  body.has-sticky-cta .wip-banner {
+    bottom: 84px;
+  }
+}
+
 /* Stacked cards scroll effect */
 .stacked-wrap {
   position: relative;

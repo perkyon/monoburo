@@ -19,3 +19,9 @@ export function trackGoal(goal: Goal, params?: Record<string, string>) {
   window.ym?.(METRIKA_ID, "reachGoal", goal, params);
   window.gtag?.("event", goal, params);
 }
+
+export function trackPageview(path: string, title: string) {
+  if (typeof window === "undefined") return;
+  window.ym?.(METRIKA_ID, "hit", path, { title, referer: window.location.href });
+  window.gtag?.("event", "page_view", { page_path: path, page_title: title });
+}
