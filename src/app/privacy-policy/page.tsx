@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { contactEmail } from "@/utils/site";
 
 export const metadata: Metadata = {
   title: "Политика конфиденциальности",
@@ -8,8 +9,8 @@ export const metadata: Metadata = {
   },
 };
 
-const lastUpdated = "04.11.2026";
-const operatorEmail = "a.matcyp@mail.ru";
+const lastUpdated = "05.11.2026";
+const operatorEmail = contactEmail;
 const siteUrl = "https://monoburo.ru";
 
 export default function PrivacyPolicyPage() {

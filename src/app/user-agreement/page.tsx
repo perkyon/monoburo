@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { contactEmail, contactPhone } from "@/utils/site";
 
 export const metadata: Metadata = {
   title: "Пользовательское соглашение",
@@ -225,7 +226,7 @@ export default function UserAgreementPage() {
             </p>
             <p className="mb-3">
               4.2. Уведомления и претензии направляются по адресу: электронная почта
-              a.matcyp@mail.ru, телефон +7 (918) 136-55-58. Направление
+              {contactEmail}, телефон {contactPhone}. Направление
               претензий иным способом не считается надлежащим. Срок рассмотрения
               претензии — 10 рабочих дней.
             </p>

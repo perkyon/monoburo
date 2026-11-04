@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { Providers } from "@/components/Providers";
 import {
+  contactEmail,
   contactPhoneRaw,
   siteDescription,
   siteLocale,
@@ -107,6 +108,7 @@ export default function RootLayout({
     url: siteUrl,
     logo: new URL(siteLogo, siteUrl).toString(),
     description: siteDescription,
+    email: contactEmail,
   };
 
   const websiteJsonLd = {
@@ -156,6 +158,7 @@ export default function RootLayout({
       name: "Россия",
     },
     telephone: contactPhoneRaw,
+    email: contactEmail,
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Услуги Monoburo",
