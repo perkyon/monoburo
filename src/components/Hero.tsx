@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { BrandLockup } from "@/components/BrandLockup";
 import { RequestModal } from "@/components/RequestModal";
 import { Magnetic } from "@/components/Magnetic";
 
@@ -99,47 +100,46 @@ export const Hero = () => {
           </motion.div>
         </div>
 
-        {/* Logo pill: tap on mobile, hover on desktop */}
-        <div className="fixed z-50 left-1/2 top-[14px] md:top-[20px] -translate-x-1/2 group hero-nav">
-          <nav
-            className={`relative h-[50px] md:h-[56px] overflow-hidden rounded-full transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:w-[64px] md:group-hover:w-[min(94vw,640px)] ${
-              navOpen ? "w-[min(96vw,640px)]" : "w-[58px]"
-            }`}
-          >
-            <div
-              className={`absolute inset-0 rounded-full border border-white/12 bg-black/40 backdrop-blur-xl transition-opacity duration-400 md:opacity-0 md:group-hover:opacity-100 ${
-                navOpen ? "opacity-100" : "opacity-0"
-              }`}
-            />
-
-            <div
-              className={`absolute inset-0 flex items-center justify-end gap-3 pr-4 pl-[68px] transition-opacity duration-300 md:gap-7 md:pr-7 md:pl-[64px] md:pointer-events-none md:opacity-0 md:group-hover:pointer-events-auto md:group-hover:opacity-100 ${
-                navOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-              }`}
-            >
+        <div className="hero-nav pointer-events-none fixed inset-x-0 top-[14px] z-50 flex items-center justify-between px-4 md:top-5 md:px-6">
+          <nav className="pointer-events-auto flex h-[50px] max-w-[calc(100vw-32px)] items-center rounded-full border border-white/12 bg-black/75 pl-3.5 pr-2 backdrop-blur-xl md:h-[56px] md:pl-4 md:pr-3">
+            <BrandLockup className="text-white" />
+            <div className="ml-4 hidden items-center gap-5 border-l border-white/15 pl-5 md:flex">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setNavOpen(false)}
-                  className="font-unbounded whitespace-nowrap text-[12px] text-white/75 transition-colors hover:text-white md:text-[14px]"
+                  className="font-unbounded whitespace-nowrap text-[12px] text-white/75 transition-colors hover:text-white md:text-[13px]"
                 >
                   {link.label}
                 </a>
               ))}
             </div>
-
             <button
               type="button"
               aria-label={navOpen ? "Закрыть меню" : "Открыть меню"}
               aria-expanded={navOpen}
               onClick={() => setNavOpen((open) => !open)}
-              className="absolute left-[8px] top-1/2 z-10 size-[34px] -translate-y-1/2 overflow-hidden rounded-[10px] md:left-[10px] md:size-[36px] md:pointer-events-none"
+              className="ml-1 flex size-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white md:hidden"
             >
-              <img src="/assets/monoburo-mark.svg" alt="" className="block size-full" />
+              <span className="block text-[22px] leading-none">{navOpen ? "×" : "☰"}</span>
             </button>
           </nav>
         </div>
+        {navOpen ? (
+          <div className="hero-nav pointer-events-auto fixed inset-x-4 top-[72px] z-50 rounded-[22px] border border-white/12 bg-black/90 p-4 backdrop-blur-xl md:hidden">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setNavOpen(false)}
+                className="block rounded-xl px-3 py-3 font-unbounded text-[14px] text-white/80 transition hover:bg-white/10 hover:text-white"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       {isRequestOpen && <RequestModal source="hero" onClose={() => setIsRequestOpen(false)} />}

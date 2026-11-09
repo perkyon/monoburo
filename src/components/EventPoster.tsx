@@ -1,6 +1,7 @@
 import type { DesignerBreakfast } from "@/data/events";
 import { formatEventDay, formatEventMonth } from "@/data/events";
 import Image from "next/image";
+import { LogoMark } from "@/components/LogoMark";
 
 export function EventPoster({ event }: { event: DesignerBreakfast }) {
   if (event.posterImage) {
@@ -22,7 +23,7 @@ export function EventPoster({ event }: { event: DesignerBreakfast }) {
     <article className="flex min-h-[480px] flex-col justify-between rounded-[24px] bg-black px-7 py-8 text-white md:min-h-[640px] md:rounded-[32px] md:px-10 md:py-12">
       <div className="flex items-start justify-between gap-4">
         <div className="flex size-11 items-center justify-center rounded-full bg-white md:size-12">
-          <img src="/assets/monoburo-mark.svg" alt="" className="size-7 md:size-8" />
+          <LogoMark className="h-[13px] w-[26px] text-black md:h-[14px] md:w-[28px]" />
         </div>
         <p className="text-right font-unbounded leading-none">
           <span className="block text-[42px] font-medium tracking-[-0.04em] md:text-[56px]">

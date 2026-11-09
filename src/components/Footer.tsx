@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { LogoMark } from "@/components/LogoMark";
 import { RequestModal } from "@/components/RequestModal";
 import { Magnetic } from "@/components/Magnetic";
 import { trackGoal, type Goal } from "@/utils/analytics";
@@ -131,11 +132,11 @@ export const Footer = () => {
           <div className="px-5 md:px-10 lg:px-14 pt-8 md:pt-10 pb-7 md:pb-9">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
               <div className="max-w-sm">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex size-[40px] rounded-[12px] bg-white items-center justify-center">
-                    <img src="/assets/monoburo-mark.svg" alt="Monoburo" className="size-[32px]" />
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 items-center justify-center rounded-[12px] bg-white px-2.5">
+                    <LogoMark className="h-[14px] w-[28px] text-black" title="Monoburo" />
                   </div>
-                  <p className="font-unbounded text-white text-[18px]">Monoburo</p>
+                  <p className="font-unbounded text-[18px] text-white">Monoburo</p>
                 </div>
                 <p className="font-unbounded text-[13px] leading-relaxed text-white/55">
                   Шоурум: {showroomAddressShort}

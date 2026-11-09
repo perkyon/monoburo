@@ -1,0 +1,23 @@
+type LogoMarkProps = {
+  className?: string;
+  title?: string;
+};
+
+/** Cropped to the glyph so it doesn’t sit as a tiny triangle in a square. */
+export const LogoMark = ({ className, title }: LogoMarkProps) => (
+  <svg
+    viewBox="7 15 25 12.6"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    aria-hidden={title ? undefined : true}
+    role={title ? "img" : undefined}
+  >
+    {title ? <title>{title}</title> : null}
+    <path d="M14.2855 20.4286L21.5712 15V21.2857L14.2855 27.5714V20.4286Z" />
+    <path d="M7 20.4286L14.2857 15V22.7857L7 27.5714V20.4286Z" />
+    <path d="M21.5713 19.7143L28.857 15V27.5714H21.5713V19.7143Z" />
+    <path d="M32 18.5714C32 20.5439 30.401 22.1428 28.4286 22.1428C26.4562 22.1428 24.8572 20.5439 24.8572 18.5714C26.6429 17.4286 18.0715 21.9286 28.4286 15C30.401 15 32 16.599 32 18.5714Z" />
+    <circle cx="28.4282" cy="24.0001" r="3.57142" />
+  </svg>
+);
