@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/:file(favicon.ico|mb.ico|mb-tab.png)",
+        source: "/:file(favicon.ico|mb.ico|mb-tab.png|tab.svg|mark.ico)",
         headers: [
           { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
         ],

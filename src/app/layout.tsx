@@ -76,11 +76,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/mb-tab.png", sizes: "32x32", type: "image/png" },
-      { url: "/mb.ico", sizes: "32x32 48x48 64x64" },
+      { url: "/tab.svg", type: "image/svg+xml" },
+      { url: "/mark.ico", sizes: "32x32" },
     ],
-    shortcut: "/mb.ico",
-    apple: { url: "/apple-touch-icon.png?v=7", sizes: "180x180", type: "image/png" },
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
   },
   formatDetection: {
     telephone: false,
@@ -207,9 +206,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
-        <link rel="icon" href="/mb-tab.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/mb.ico" sizes="32x32" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7" />
+        <link rel="icon" href="/tab.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-KJVBD9CH2B"
           strategy="afterInteractive"
