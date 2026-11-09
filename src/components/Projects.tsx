@@ -13,6 +13,7 @@ import {
   relatedProjects,
 } from "@/data/projects";
 import { getProjectTheme } from "@/utils/projectThemes";
+import { CaseArrow } from "@/components/CaseArrow";
 
 export const Projects = () => {
   const [filter, setFilter] = useState<ProjectCategory | "all">("all");
@@ -190,6 +191,7 @@ function CaseRow({
             quality={90}
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
+          <CaseArrow />
         </div>
       </div>
     </a>

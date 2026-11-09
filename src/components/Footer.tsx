@@ -52,11 +52,15 @@ const columns: { title: string; items: FooterLink[] }[] = [
   },
 ];
 
+const navColumns = columns.filter((column) => column.title !== "Юридически");
+const legalColumn = columns.find((column) => column.title === "Юридически");
+
 export const Footer = () => {
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
     const node = stageRef.current;
@@ -97,18 +101,22 @@ export const Footer = () => {
               fill
               sizes="100vw"
               quality={75}
-              className="object-cover opacity-80"
+              className={`object-cover transition-opacity duration-500 ${
+                videoReady ? "opacity-0" : "opacity-100"
+              }`}
             />
             {shouldLoad ? (
               <video
                 ref={videoRef}
-                className="absolute inset-0 size-full object-cover opacity-80"
+                className={`absolute inset-0 size-full object-cover transition-opacity duration-500 ${
+                  videoReady ? "opacity-100" : "opacity-0"
+                }`}
                 src="/assets/monoburo-footer-bg.mp4?v=2"
-                poster="/assets/footer-poster.jpg"
                 muted
                 loop
                 playsInline
                 preload="none"
+                onPlaying={() => setVideoReady(true)}
               />
             ) : null}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent" />
@@ -128,42 +136,40 @@ export const Footer = () => {
             </div>
           </div>
 
-          <div className="px-5 md:px-10 lg:px-14 pt-8 md:pt-10 pb-7 md:pb-9">
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
-              <div className="max-w-sm">
-                <div className="flex items-center gap-3 mb-4">
+          <div className="px-5 md:px-10 lg:px-14 pt-8 md:pt-12 pb-6 md:pb-8">
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)] lg:gap-16 lg:items-start">
+              <div>
+                <div className="flex items-center gap-3">
                   <div className="flex size-[40px] rounded-[12px] bg-white items-center justify-center">
                     <img src="/assets/monoburo-mark.svg" alt="Monoburo" className="size-[32px]" />
                   </div>
                   <p className="font-unbounded text-white text-[18px]">Monoburo</p>
                 </div>
-                <p className="font-unbounded text-[13px] leading-relaxed text-white/55">
-                  Шоурум: {showroomAddressShort}
-                  <br />
-                  Цех: {workshopAddressShort}
-                  <br />
+                <div className="mt-5 space-y-1.5 font-manrope text-[13px] leading-[1.55] text-white/50">
+                  <p>Шоурум: {showroomAddressShort}</p>
+                  <p>Цех: {workshopAddressShort}</p>
                   <a
                     href={`tel:${contactPhoneTel}`}
                     onClick={() => trackGoal("contact_phone", { from: "footer" })}
-                    className="transition-colors hover:text-white"
+                    className="inline-block pt-1 font-unbounded text-[13px] text-white/70 transition-colors hover:text-white"
                   >
                     {contactPhone}
                   </a>
-                </p>
+                </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-8 md:gap-14 text-[13px] text-white/65">
-                {columns.map((column) => (
-                  <div key={column.title} className="min-w-[150px]">
-                    <p className="font-unbounded font-medium text-white/90 mb-3 text-[13px]">
+              <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
+                {navColumns.map((column) => (
+                  <div key={column.title}>
+                    <p className="mb-4 font-unbounded text-[11px] uppercase tracking-[0.16em] text-white/35">
                       {column.title}
                     </p>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2.5">
                       {column.items.map(({ label, href, goal }) => (
                         <a
                           key={href + label}
                           href={href}
-                          className="font-unbounded hover:text-white transition-colors"
+                          className="font-unbounded text-[13px] leading-snug text-white/70 transition-colors hover:text-white"
                           onClick={goal ? () => trackGoal(goal, { from: "footer" }) : undefined}
                           {...(href.startsWith("http") || href.startsWith("mailto")
                             ? { target: "_blank", rel: "noreferrer" }
@@ -178,10 +184,24 @@ export const Footer = () => {
               </div>
             </div>
 
-            <div className="mt-8 h-px w-full bg-white/12" />
-            <p className="mt-4 font-unbounded text-[12px] text-white/45">
-              © Monoburo — {new Date().getFullYear()}. Все права защищены.
-            </p>
+            <div className="mt-10 flex flex-col gap-3 border-t border-white/[0.08] pt-5 md:mt-12 md:flex-row md:items-center md:justify-between">
+              <p className="font-unbounded text-[11px] tracking-[0.04em] text-white/35">
+                © Monoburo — {new Date().getFullYear()}. Все права защищены.
+              </p>
+              {legalColumn ? (
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                  {legalColumn.items.map(({ label, href }) => (
+                    <a
+                      key={href}
+                      href={href}
+                      className="font-unbounded text-[11px] tracking-[0.04em] text-white/40 transition-colors hover:text-white/70"
+                    >
+                      {label}
+                    </a>
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

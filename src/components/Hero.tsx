@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { RequestModal } from "@/components/RequestModal";
 import { Magnetic } from "@/components/Magnetic";
 
@@ -17,6 +17,14 @@ const navLinks = [
 export const Hero = () => {
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const imageY = useTransform(scrollYProgress, [0, 1], reduceMotion ? ["0%", "0%"] : ["0%", "28%"]);
+  const imageScale = useTransform(scrollYProgress, [0, 1], reduceMotion ? [1.08, 1.08] : [1.08, 1.18]);
 
   useEffect(() => {
     if (!navOpen) return;
@@ -30,13 +38,20 @@ export const Hero = () => {
   }, [navOpen]);
 
   return (
-    <section id="hero" className="relative w-full min-h-[100svh] overflow-hidden bg-black">
+    <section
+      ref={sectionRef}
+      id="hero"
+      className="relative w-full min-h-[100svh] overflow-hidden bg-black"
+    >
       <h1 className="sr-only">
         Monoburo — дизайн и производство мебели для бизнеса, дома и офисов
       </h1>
 
       <div className="relative w-full min-h-[100svh]">
-        <div className="absolute inset-0 h-full w-full">
+        <motion.div
+          className="absolute inset-x-0 -top-[12%] h-[130%] w-full will-change-transform"
+          style={{ y: imageY, scale: imageScale }}
+        >
           <Image
             src="/assets/hero-bg.png"
             alt=""
@@ -44,9 +59,9 @@ export const Hero = () => {
             priority
             quality={90}
             sizes="100vw"
-            className="object-cover object-[center_30%] pointer-events-none"
+            className="pointer-events-none object-cover object-[center_30%]"
           />
-        </div>
+        </motion.div>
 
         <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.25)_55%,rgba(0,0,0,0.72)_100%)]" />
         <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/50 via-transparent to-black/75" />
@@ -84,18 +99,6 @@ export const Hero = () => {
                 Оставить заявку
               </button>
             </Magnetic>
-          </motion.div>
-        </div>
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-8 z-[2] flex justify-center">
-          <motion.div
-            className="flex flex-col items-center gap-2 text-white/45"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.2 }}
-          >
-            <span className="font-unbounded text-[10px] tracking-[0.22em] uppercase">Scroll</span>
-            <span className="block h-8 w-px bg-white/35" />
           </motion.div>
         </div>
 

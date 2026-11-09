@@ -8,6 +8,7 @@ import { RequestModal } from "@/components/RequestModal";
 import type { Project } from "@/components/ProjectModal";
 import { projectPath } from "@/data/projects";
 import { getProjectTheme } from "@/utils/projectThemes";
+import { CaseArrow } from "@/components/CaseArrow";
 
 function splitCopy(value?: string) {
   if (!value) return [];
@@ -342,6 +343,7 @@ export const ProjectArticle = ({
                       quality={90}
                       className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                     />
+                    <CaseArrow />
                   </div>
                   <p className="font-unbounded text-[12px] uppercase tracking-[0.16em] text-black/40">
                     {item.kind ?? "Проект"}

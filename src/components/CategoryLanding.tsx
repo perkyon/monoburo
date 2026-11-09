@@ -5,6 +5,7 @@ import { RequestButton } from "@/components/RequestButton";
 import { StickyContact } from "@/components/StickyContact";
 import { SubpageHeader } from "@/components/SubpageHeader";
 import { projectPath } from "@/data/projects";
+import { CaseArrow } from "@/components/CaseArrow";
 
 type Fact = { value: string; label: string };
 type Point = { title: string; text: string };
@@ -108,6 +109,7 @@ export const CategoryLanding = ({
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
               />
+              <CaseArrow />
             </div>
             <p className="font-unbounded text-[12px] uppercase tracking-[0.16em] text-black/40">
               {[project.kind, project.details?.duration, project.details?.budget]
