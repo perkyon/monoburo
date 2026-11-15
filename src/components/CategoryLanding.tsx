@@ -1,5 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Footer } from "@/components/Footer";
+import { JsonLd } from "@/components/JsonLd";
 import type { Project } from "@/components/ProjectModal";
 import { RequestButton } from "@/components/RequestButton";
 import { StickyContact } from "@/components/StickyContact";
@@ -9,6 +11,7 @@ import { CaseArrow } from "@/components/CaseArrow";
 
 type Fact = { value: string; label: string };
 type Point = { title: string; text: string };
+type RelatedLink = { href: string; label: string };
 
 export type CategoryLandingProps = {
   source: string;
@@ -21,6 +24,8 @@ export type CategoryLandingProps = {
   steps: Point[];
   casesTitle: string;
   projects: Project[];
+  related?: RelatedLink[];
+  jsonLd?: Record<string, unknown>;
 };
 
 export const CategoryLanding = ({
@@ -34,8 +39,11 @@ export const CategoryLanding = ({
   steps,
   casesTitle,
   projects,
+  related,
+  jsonLd,
 }: CategoryLandingProps) => (
   <main className="min-h-screen bg-background">
+    {jsonLd ? <JsonLd data={jsonLd} /> : null}
     <SubpageHeader source={source} />
 
     <section className="container-page pb-12 pt-32 md:pb-20 md:pt-44">
@@ -65,6 +73,19 @@ export const CategoryLanding = ({
       <div className="mt-10 md:mt-14">
         <RequestButton source={source} />
       </div>
+      {related?.length ? (
+        <p className="mt-6 font-manrope text-[13px] leading-relaxed text-black/40 md:text-[14px]">
+          Ещё:{" "}
+          {related.map((item, index) => (
+            <span key={item.href}>
+              {index > 0 ? " · " : null}
+              <Link href={item.href} className="underline-offset-4 transition hover:text-black/70 hover:underline">
+                {item.label}
+              </Link>
+            </span>
+          ))}
+        </p>
+      ) : null}
     </section>
 
     <section className="container-page py-12 md:py-20">

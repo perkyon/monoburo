@@ -30,7 +30,11 @@ const columns: { title: string; items: FooterLink[] }[] = [
   {
     title: "Направления",
     items: [
-      { label: "Мебель для HoReCa", href: "/horeca" },
+      { label: "HoReCa", href: "/horeca" },
+      { label: "Барные стойки", href: "/barnye-stoyki" },
+      { label: "Офисы", href: "/ofisnaya-mebel" },
+      { label: "Корпусная", href: "/korpusnaya-mebel" },
+      { label: "По проекту", href: "/mebel-po-dizayn-proektu" },
       { label: "Предметы", href: "/predmety" },
       { label: "Дизайнерам", href: "/designers" },
     ],

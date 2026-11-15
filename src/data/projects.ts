@@ -707,6 +707,12 @@ export function getPublicProject(id: string) {
   return publicProjects.find((project) => String(project.id) === id);
 }
 
+export function getPublicProjectsByIds(ids: readonly string[]) {
+  return ids
+    .map((id) => publicProjects.find((project) => String(project.id) === id))
+    .filter((project): project is (typeof publicProjects)[number] => Boolean(project));
+}
+
 export function relatedProjects(project: Project, limit = 2): Project[] {
   return allProjects
     .filter(

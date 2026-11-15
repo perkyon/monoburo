@@ -1,6 +1,7 @@
 export const siteName = "Monoburo";
 export const siteDescription =
-  "Monoburo — дизайн и производство мебели для бизнеса, офисов, HoReCa и частных интерьеров.";
+  "Производство мебели по индивидуальным размерам и дизайн-проектам. Для дома, офисов, кафе и ресторанов. Собственный цех в Краснодаре. Портфолио и расчёт стоимости.";
+export const siteTitle = "Мебель на заказ в Краснодаре — Monoburo";
 export const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://monoburo.ru";
 export const siteLocale = "ru_RU";

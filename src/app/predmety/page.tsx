@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
 import { CategoryLanding } from "@/components/CategoryLanding";
 import { publicProjects } from "@/data/projects";
+import { landingMetadata, serviceJsonLd } from "@/utils/seo";
 
 const title = "Предметы мебели на заказ из МДФ и эмали — Краснодар";
 const description =
   "Отдельно стоящие предметы мебели: фиксированная цена от 40 000 ₽, срок 1,5 месяца, цвет и размер под заказ. Свой цех в Краснодаре.";
 
-export const metadata: Metadata = {
+export const metadata = landingMetadata({
   title,
   description,
-  alternates: { canonical: "/predmety" },
-  openGraph: { url: "/predmety", title, description, images: ["/interior/DSC03204.JPG"] },
-};
+  path: "/predmety",
+  image: "/interior/DSC03204.JPG",
+});
 
 export default function PredmetyPage() {
   return (
@@ -46,6 +46,11 @@ export default function PredmetyPage() {
       ]}
       casesTitle="Линейка"
       projects={publicProjects.filter((project) => project.category === "interior")}
+      related={[
+        { href: "/korpusnaya-mebel", label: "Корпусная" },
+        { href: "/mebel-po-dizayn-proektu", label: "По проекту" },
+      ]}
+      jsonLd={serviceJsonLd({ name: title, description, path: "/predmety" })}
       steps={[
         { title: "Модель", text: "Выбираете предмет — в шоуруме или по фото." },
         { title: "Цвет и размер", text: "Подбираем эмаль и габарит под место." },

@@ -6,37 +6,40 @@ import { Providers } from "@/components/Providers";
 import {
   contactEmail,
   contactPhoneRaw,
+  showroomAddressShort,
   siteDescription,
   siteLocale,
   siteLogo,
   siteName,
   siteOgImage,
+  siteTitle,
   siteUrl,
+  workshopAddressShort,
 } from "@/utils/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "monoburo",
-    template: `%s — monoburo`,
+    default: siteTitle,
+    template: `%s — Monoburo`,
   },
   description: siteDescription,
-  applicationName: "monoburo",
+  applicationName: siteName,
   appleWebApp: {
     capable: true,
-    title: "monoburo",
+    title: siteName,
     statusBarStyle: "default",
   },
   category: "Design",
   keywords: [
-    "дизайн мебели",
+    "мебель на заказ Краснодар",
     "производство мебели",
-    "мебель на заказ",
+    "мебель по дизайн-проекту",
+    "барные стойки на заказ",
+    "мебель для кафе и ресторанов",
+    "офисная мебель на заказ",
+    "корпусная мебель на заказ",
     "HoReCa",
-    "офисная мебель",
-    "дизайн интерьера",
-    "проектирование мебели",
-    "мебель для бизнеса",
   ],
   alternates: {
     canonical: "/",
@@ -55,8 +58,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    siteName: "monoburo",
-    title: "monoburo",
+    siteName: siteName,
+    title: siteTitle,
     description: siteDescription,
     locale: siteLocale,
     images: [
@@ -70,7 +73,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "monoburo",
+    title: siteTitle,
     description: siteDescription,
     images: [siteOgImage],
   },
@@ -117,22 +120,40 @@ export default function RootLayout({
 
   const services = [
     {
-      name: "Мебель для HoReCa",
+      name: "Мебель для кафе и ресторанов",
       description:
-        "Разработка и производство мебели под заказ для кафе, ресторанов, баров и кофеен: залы, барные зоны, посадка, стойки выдачи и ожидания.",
+        "Барные стойки, зоны выдачи, посадка и хранение для кафе, кофеен и ресторанов. Свой цех в Краснодаре.",
       url: `${siteUrl}/horeca`,
     },
     {
-      name: "Офисная мебель",
+      name: "Барные стойки на заказ",
       description:
-        "Рабочие места, переговорные, кабинеты, зоны ожидания и reception для офисов малого и среднего бизнеса, проектирование под планировку.",
-      url: `${siteUrl}#projects`,
+        "Барные стойки под поток, технику и интерьер зала: высота, глубина, узлы, свет. Производство в Краснодаре.",
+      url: `${siteUrl}/barnye-stoyki`,
     },
     {
-      name: "Мебель для рабочих пространств и коворкингов",
+      name: "Офисная мебель на заказ",
       description:
-        "Гибкие рабочие места, переговорные комнаты и зоны коллаборации для коворкингов, образовательных и гибридных пространств.",
-      url: `${siteUrl}#projects`,
+        "Рабочие места, переговорные, reception и кабинеты под планировку офиса. Обмер, чертёж, свой цех.",
+      url: `${siteUrl}/ofisnaya-mebel`,
+    },
+    {
+      name: "Корпусная мебель на заказ",
+      description:
+        "Корпуса в размер помещения: хранение, кухни, барные линии, встройки. Не каталог — производство под объект.",
+      url: `${siteUrl}/korpusnaya-mebel`,
+    },
+    {
+      name: "Мебель по дизайн-проекту",
+      description:
+        "Считаем, деталируем и производим мебель по чертежам и дизайн-проектам. Для дизайнеров и заказчиков с готовым интерьером.",
+      url: `${siteUrl}/mebel-po-dizayn-proektu`,
+    },
+    {
+      name: "Производство мебели для дизайнеров",
+      description:
+        "Цех работает по чертежам дизайнера: смета, деталировка, изготовление и монтаж. Авторство проекта остаётся вашим.",
+      url: `${siteUrl}/designers`,
     },
   ];
 
@@ -156,6 +177,30 @@ export default function RootLayout({
     },
     telephone: contactPhoneRaw,
     email: contactEmail,
+    location: [
+      {
+        "@type": "Place",
+        name: "Шоурум Monoburo",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: showroomAddressShort,
+          addressLocality: "Краснодар",
+          addressRegion: "Краснодарский край",
+          addressCountry: "RU",
+        },
+      },
+      {
+        "@type": "Place",
+        name: "Цех Monoburo",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: workshopAddressShort,
+          addressLocality: "Краснодар",
+          addressRegion: "Краснодарский край",
+          addressCountry: "RU",
+        },
+      },
+    ],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Услуги Monoburo",
@@ -169,27 +214,6 @@ export default function RootLayout({
         },
       })),
     },
-  };
-
-  const servicesItemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Услуги Monoburo",
-    itemListElement: services.map((service, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: {
-        "@type": "Service",
-        name: service.name,
-        description: service.description,
-        url: service.url,
-        provider: {
-          "@type": "Organization",
-          name: siteName,
-          url: siteUrl,
-        },
-      },
-    })),
   };
 
   return (
@@ -258,12 +282,6 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(professionalServiceJsonLd),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(servicesItemListJsonLd),
           }}
         />
       </head>

@@ -1,25 +1,25 @@
-import type { Metadata } from "next";
 import { CategoryLanding } from "@/components/CategoryLanding";
 import { publicProjects } from "@/data/projects";
+import { landingMetadata, serviceJsonLd } from "@/utils/seo";
 
 const title = "Мебель для кафе и ресторанов на заказ в Краснодаре";
 const description =
-  "Барные стойки, зоны выдачи, посадка и хранение для кофеен и ресторанов. Свой цех в Краснодаре, проекты за 29–45 дней. Кейсы surf coffee, Лейбл, Том Сойер, Союзники.";
+  "Мебель для кафе и ресторанов на заказ: бар, выдача, посадка, хранение. Свой цех в Краснодаре, проекты за 29–45 дней. Кейсы surf coffee, Лейбл, Том Сойер, Союзники.";
 
-export const metadata: Metadata = {
+export const metadata = landingMetadata({
   title,
   description,
-  alternates: { canonical: "/horeca" },
-  openGraph: { url: "/horeca", title, description, images: ["/figma/preview-surf.webp"] },
-};
+  path: "/horeca",
+  image: "/figma/preview-surf.webp",
+});
 
 export default function HorecaPage() {
   return (
     <CategoryLanding
       source="horeca"
       eyebrow="HoReCa · Краснодар"
-      title="Мебель для кафе, кофеен и ресторанов на заказ"
-      lead="Проектируем и делаем мебель для HoReCa в своём цехе в Краснодаре: бар, выдача, посадка, хранение. Под поток гостей и ежедневную уборку, а не под рендер."
+      title="Мебель для кафе и ресторанов"
+      lead="Проектируем и делаем мебель для кафе, кофеен и ресторанов в своём цехе в Краснодаре: бар, выдача, посадка, хранение. Под поток гостей и ежедневную уборку, а не под рендер."
       facts={[
         { value: "29–45", label: "дней от проекта до открытия" },
         { value: "1.2–2.4", label: "млн ₽ — бюджеты наших проектов" },
@@ -46,6 +46,12 @@ export default function HorecaPage() {
       ]}
       casesTitle="Кейсы HoReCa"
       projects={publicProjects.filter((project) => project.category === "horeca")}
+      related={[
+        { href: "/barnye-stoyki", label: "Барные стойки" },
+        { href: "/korpusnaya-mebel", label: "Корпусная" },
+        { href: "/mebel-po-dizayn-proektu", label: "По проекту" },
+      ]}
+      jsonLd={serviceJsonLd({ name: title, description, path: "/horeca" })}
       steps={[
         {
           title: "Обмер и сценарий",

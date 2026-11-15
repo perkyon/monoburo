@@ -58,7 +58,7 @@ export const breakfasts: DesignerBreakfast[] = [
     ...PLACE,
     theme: "Дом, офис, HoReCa — один язык",
     description:
-      "Следующий выпуск: один конструктив на разные сценарии. Как не делать три мебели под три брифа.",
+      "Разбирали один конструктив на разные сценарии. Как не делать три мебели под три брифа.",
     axes: [
       { label: "дом", value: 4 },
       { label: "офис", value: 3 },
@@ -111,6 +111,10 @@ export function getInitialBreakfastIndex(events = breakfasts, now = new Date()) 
   const today = startOfDay(now);
   const upcoming = events.findIndex((event) => startOfDay(parseEventDate(event.date)) >= today);
   return upcoming === -1 ? events.length - 1 : upcoming;
+}
+
+export function hasUpcomingBreakfast(events = breakfasts, now = new Date()) {
+  return events.some((event) => eventStatus(event, now) !== "past");
 }
 
 export function statusLabel(status: BreakfastStatus, isNextUpcoming: boolean) {

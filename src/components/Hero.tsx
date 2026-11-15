@@ -44,7 +44,7 @@ export const Hero = () => {
       className="relative w-full min-h-[100svh] overflow-hidden bg-black"
     >
       <h1 className="sr-only">
-        Monoburo — дизайн и производство мебели для бизнеса, дома и офисов
+        Monoburo — мебель на заказ в Краснодаре. Дизайн и производство для дома, офисов, кафе и ресторанов
       </h1>
 
       <div className="relative w-full min-h-[100svh]">
@@ -81,7 +81,7 @@ export const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
           >
-            Дизайн и производство мебели для бизнеса, дома, офисов и HoReCa.
+            Мебель на заказ в своём цехе в Краснодаре — для дома, офисов, кафе и ресторанов.
           </motion.p>
 
           <motion.div

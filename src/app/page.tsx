@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Hero } from "@/components/Hero";
 import { About } from "@/components/About";
 import { Workshop } from "@/components/Workshop";
@@ -7,6 +8,13 @@ import { Designers } from "@/components/Designers";
 import { Footer } from "@/components/Footer";
 import { Reveal } from "@/components/Reveal";
 import { StickyContact } from "@/components/StickyContact";
+import { siteDescription, siteTitle } from "@/utils/site";
+
+export const metadata: Metadata = {
+  title: { absolute: siteTitle },
+  description: siteDescription,
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (

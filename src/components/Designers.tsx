@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RequestButton } from "@/components/RequestButton";
+import { hasUpcomingBreakfast } from "@/data/events";
 import { designerCommission } from "@/utils/site";
 
 const perks = [
@@ -41,12 +42,12 @@ export const Designers = ({ asPage = false }: { asPage?: boolean }) => {
           </p>
           <div className="mt-3 grid grid-cols-1 gap-10 md:grid-cols-[1.2fr_0.8fr] md:items-end md:gap-16">
             <div>
-              <Title className="max-w-[16ch] font-unbounded text-[32px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[52px]">
-                Сопровождайте проект. Производство&nbsp;— на&nbsp;нас.
+              <Title className="max-w-[18ch] font-unbounded text-[32px] font-medium leading-[1.05] tracking-[-0.03em] md:text-[52px]">
+                Производим мебель по&nbsp;вашим чертежам
               </Title>
               <p className="mt-5 max-w-[44ch] font-manrope text-[15px] leading-relaxed text-white/55 md:text-[17px]">
-                Работаем с дизайнерами интерьера в Краснодаре. Вы остаётесь автором проекта, а всё, что
-                касается производства — расчёт, изготовление в своём цехе и монтаж, — берём на себя.
+                Цех для дизайнеров интерьера в Краснодаре. Вы остаётесь автором проекта — мы считаем,
+                деталируем и делаем мебель по вашим чертежам в своём производстве, потом монтируем.
               </p>
             </div>
             <div className="md:text-right">
@@ -90,7 +91,7 @@ export const Designers = ({ asPage = false }: { asPage?: boolean }) => {
               href={asPage ? "#events" : "/#events"}
               className="inline-flex h-[52px] items-center rounded-full border border-white/20 px-6 font-unbounded text-[14px] text-white/70 transition hover:border-white/50 hover:text-white"
             >
-              Ближайший завтрак
+              {hasUpcomingBreakfast() ? "Ближайший завтрак" : "Завтраки"}
             </Link>
           </div>
         </div>

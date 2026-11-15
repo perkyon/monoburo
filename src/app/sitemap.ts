@@ -12,7 +12,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
-    ...["/horeca", "/predmety", "/designers"].map((path) => ({
+    ...[
+      "/horeca",
+      "/barnye-stoyki",
+      "/ofisnaya-mebel",
+      "/korpusnaya-mebel",
+      "/mebel-po-dizayn-proektu",
+      "/predmety",
+      "/designers",
+    ].map((path) => ({
       url: `${siteUrl}${path}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
